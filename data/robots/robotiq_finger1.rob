@@ -1,0 +1,39 @@
+### Kinematics of the Robotiq gripper finger1 ###
+
+#Denavit-Hartenberg parameters. Alpha and theta are in degrees, d and a are in mm
+thetaDeg 90 -29.61 0 29.61
+d 0 0 0 0
+a 0 0.021877 0.057150 0.038940
+alphaDeg 0 90 0 0
+
+#rotational axes
+axis   0 0 1   0 0 1   0 0 1   0 0 1
+
+#index of parent link
+parents     -1   0   1   2
+
+#min and max joint values, in degrees
+qMinDeg    -17 -5.39 0 -54.61
+qMaxDeg    17 64.61 90 43.39
+
+#velocity maxima, in degrees
+velMaxDeg  90   90   90   90 
+
+#acceration maxima, in degrees
+accMaxDeg 180  180  180  180
+
+#initial configuration, in degrees
+qDeg 0 0 0 0
+
+#geometry files -- currently empty
+geometry   ""   ""    ""    ""
+
+mass       0.5  0.3   0.3   0.3
+#when you get the geometry files set up, call automass to set the com and inertia values
+#automass
+com	0 0 0 	0 0 0 	0 0 0	0 0 0
+inertia		1e-2 0 0   0 1e-2 0  0 0 1e-2 \
+		1e-2 0 0   0 1e-2 0  0 0 1e-2 \
+		1e-2 0 0   0 1e-2 0  0 0 1e-2 \
+		1e-2 0 0   0 1e-2 0  0 0 1e-2
+torqueMax  1   1    1    1 

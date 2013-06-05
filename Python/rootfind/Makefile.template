@@ -1,0 +1,52 @@
+####  define some variables before including this file ####
+####  SRCS,LIBNAME,INCDIR,DEFINES,EXTRAOBJS	       ####
+# RootFind
+
+CC= gcc
+AR= ar
+RANLIB= ranlib
+
+## Default Setting
+BUILDNAME=unknownOS
+#BUILDNAME=linux
+
+## Mac Setting
+#BUILDNAME=MacOSX
+
+ifeq ($(TERM),cygwin)
+ BUILDNAME=Cygwin
+else ifneq ($(OS),)
+ BUILDNAME=$(OS)
+endif
+
+ifeq ($(BUILDNAME),MacOSX)
+ DEFINES += MAC_OS_X
+endif
+ifeq ($(BUILDNAME),linux)
+     DEFINES += LINUX
+endif
+ifeq ($(BUILDNAME),Windows_NT)
+     DEFINES += WIN32
+endif
+ifeq ($(BUILDNAME),Cygwin)
+     DEFINES += CYGWIN
+endif
+
+
+CPPFLAGS= -O3 -fPIC -Wall -fpermissive $(addprefix -I, $(INCDIR)) $(addprefix -D, $(DEFINES))
+
+
+OBJDIR= objs_$(BUILDNAME)
+vpath %.o $(OBJDIR)
+
+LIBDIROUT= libs_$(BUILDNAME)
+
+OBJS= $(SRCS:.cpp=.o)
+
+#################### Start the action #########################
+%.o: %.cpp
+	mkdir -p $(OBJDIR);
+	$(CC) $(CPPFLAGS) -c $*.cpp -o $(OBJDIR)/$*.o
+
+
+

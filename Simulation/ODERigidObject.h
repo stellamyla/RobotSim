@@ -1,0 +1,44 @@
+#ifndef ODE_RIGID_OBJECT_H
+#define ODE_RIGID_OBJECT_H
+
+#include "Modeling/RigidObject.h"
+#include "ODETriMesh.h"
+#include <math/vector.h>
+#include <ode/common.h>
+#include <myfile.h>
+using namespace Math;
+
+class ODERigidObject
+{
+ public:
+  static double defaultPadding;
+  static ODESurfaceProperties defaultSurface;
+
+  ODERigidObject(const RigidObject& obj);
+  ~ODERigidObject();
+  void Create(dWorldID worldID,dSpaceID space);
+  void Clear();
+  void SetTransform(const RigidTransform& T);
+  void GetTransform(RigidTransform& T) const;
+  void SetVelocity(const Vector3& w,const Vector3& v);
+  void GetVelocity(Vector3& w,Vector3& v) const;
+  bool ReadState(File& f);
+  bool WriteState(File& f) const;
+  
+  //wierd thing needed for collision detection
+  void UpdateLastTransform();
+
+  dBodyID body() { return bodyID; }
+  dGeomID geom() { return geometry->geom(); }
+  dSpaceID space() { return spaceID; }
+  ODETriMesh* triMesh() { return geometry; }
+
+  const RigidObject& obj;
+
+ private:
+  dBodyID bodyID;
+  ODETriMesh* geometry;
+  dSpaceID spaceID;
+};
+
+#endif

@@ -1,0 +1,95 @@
+### A 40R planar robot ###
+TParent 1 0 0   0 1 0   0 0 1   0 0 0     \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0    \
+1 0 0   0 1 0   0 0 1   1 0 0
+axis	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0	0 1 0
+jointtype	r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r r
+qMin	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+qMax	6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319 6.28319
+q	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+geometry	 "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"  "data/objects/thincube.tri"
+mass	1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+automass
+torqueMax	1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+accMax	1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+velMax	1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+joint spin 0
+joint spin 1
+joint spin 2
+joint spin 3
+joint spin 4
+joint spin 5
+joint spin 6
+joint spin 7
+joint spin 8
+joint spin 9
+joint spin 10
+joint spin 11
+joint spin 12
+joint spin 13
+joint spin 14
+joint spin 15
+joint spin 16
+joint spin 17
+joint spin 18
+joint spin 19
+joint spin 20
+joint spin 21
+joint spin 22
+joint spin 23
+joint spin 24
+joint spin 25
+joint spin 26
+joint spin 27
+joint spin 28
+joint spin 29
+joint spin 30
+joint spin 31
+joint spin 32
+joint spin 33
+joint spin 34
+joint spin 35
+joint spin 36
+joint spin 37
+joint spin 38
+joint spin 39
+servoP	50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50
+servoI	100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+servoD	3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
