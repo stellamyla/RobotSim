@@ -716,10 +716,13 @@ bool Robot::LoadRob(const char* fn) {
 		FatalError("Scale not done yet");
 	if (geomscale.size() == 1)
 		geomscale.resize(n, geomscale[0]);
+	string fnPath = GetFilePath(fn);
+	if(!fnPath.empty()) fnPath += "/";
 	for (size_t i = 0; i < geomFn.size(); i++) {
 		if (geomFn[i].empty()) {
 			continue;
 		}
+		geomFn[i] = fnPath+geomFn[i];
 		if (!LoadGeometry(i, geomFn[i].c_str())) {
 		  fprintf(stderr, "Unable to load link %d geometry file %s\n", i,
 			  geomFn[i].c_str());
@@ -908,6 +911,7 @@ bool Robot::LoadRob(const char* fn) {
 		return false;
 
 	for (size_t i = 0; i < mountLinks.size(); i++) {
+	  mountFiles[i] = fnPath + mountFiles[i];
 		printf("Mounting file %s\n", mountFiles[i].c_str());
 		if (Meshing::CanLoadTriMeshExt(FileExtension(mountFiles[i].c_str()))) {
 			//mount a triangle mesh on top of another triangle mesh

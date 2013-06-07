@@ -19,7 +19,9 @@ bool Environment::Load(const char* fn)
       return false;
     }
     if(!f.CheckSize("mesh",1,fn)) return false;
-    string meshfn = f["mesh"][0].AsString();
+    string fnPath = GetFilePath(fn);
+    if(!fnPath.empty()) fnPath += "/";
+    string meshfn = fnPath + f["mesh"][0].AsString();
     if(!Meshing::Import(meshfn.c_str(),mesh)) {
       cout<<"Environment::Load error loading "<<meshfn<<endl;
       return false;
