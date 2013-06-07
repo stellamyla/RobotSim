@@ -717,7 +717,6 @@ bool Robot::LoadRob(const char* fn) {
 	if (geomscale.size() == 1)
 		geomscale.resize(n, geomscale[0]);
 	string fnPath = GetFilePath(fn);
-	if(!fnPath.empty()) fnPath += "/";
 	for (size_t i = 0; i < geomFn.size(); i++) {
 		if (geomFn[i].empty()) {
 			continue;

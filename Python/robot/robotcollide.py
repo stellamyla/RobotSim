@@ -1,7 +1,7 @@
 from __future__ import generators
 from robotsim import *
-from geometry import collide
-from geometry import se3
+import collide
+import se3
 
 
 def makeGeom(trimesh):

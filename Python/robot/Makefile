@@ -7,7 +7,18 @@ docs:
 	./doxy2swig.py docs/xml/index.xml docs/docs.i
 	pydoc -w robotsim
 
-lib:
+swig:
+	swig -python -c++ src/robotsim.i
+	swig -python -c++ src/motionplanning.i
+	swig -python -c++ src/collide.i
+	swig -python -c++ src/rootfind.i
+	cp src/robotsim.py .
+	cp src/motionplanning.py .
+	cp src/collide.py .
+	cp src/rootfind.py .
+
+
+lib: swig
 	ln -sf ../../Library
 	python setup.py build_ext --inplace
 

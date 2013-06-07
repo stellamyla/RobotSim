@@ -25,7 +25,6 @@ bool RigidObject::Load(const char* fn)
     if(!f.CheckType("mesh",PrimitiveValue::String,fn)) return false;
 
     string fnPath = GetFilePath(fn);
-    if(!fnPath.empty()) fnPath += "/";
     string meshfn = fnPath + f["mesh"][0].AsString();
     if(!Meshing::Import(meshfn.c_str(),mesh)) {
       fprintf(stderr,"Error loading mesh file %s\n",meshfn.c_str());

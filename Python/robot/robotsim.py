@@ -301,27 +301,56 @@ class Mass(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, Mass, name)
     __repr__ = _swig_repr
     def setMass(self, *args):
-        """setMass(Mass self, double _mass)"""
+        """
+        setMass(Mass self, double _mass)
+
+        void Mass::setMass(double
+        _mass) 
+        """
         return _robotsim.Mass_setMass(self, *args)
 
     def getMass(self):
-        """getMass(Mass self) -> double"""
+        """
+        getMass(Mass self) -> double
+
+        double Mass::getMass() const 
+        """
         return _robotsim.Mass_getMass(self)
 
     def setCom(self, *args):
-        """setCom(Mass self, doubleVector _com)"""
+        """
+        setCom(Mass self, doubleVector _com)
+
+        void Mass::setCom(const
+        std::vector< double > &_com) 
+        """
         return _robotsim.Mass_setCom(self, *args)
 
     def getCom(self):
-        """getCom(Mass self)"""
+        """
+        getCom(Mass self)
+
+        void Mass::getCom(std::vector<
+        double > &out) const 
+        """
         return _robotsim.Mass_getCom(self)
 
     def setInertia(self, *args):
-        """setInertia(Mass self, doubleVector _inertia)"""
+        """
+        setInertia(Mass self, doubleVector _inertia)
+
+        void Mass::setInertia(const
+        std::vector< double > &_inertia) 
+        """
         return _robotsim.Mass_setInertia(self, *args)
 
     def getInertia(self):
-        """getInertia(Mass self)"""
+        """
+        getInertia(Mass self)
+
+        void
+        Mass::getInertia(std::vector< double > &out) const 
+        """
         return _robotsim.Mass_getInertia(self)
 
     __swig_setmethods__["mass"] = _robotsim.Mass_mass_set
@@ -364,6 +393,24 @@ class TriangleMesh(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, TriangleMesh, name)
     __repr__ = _swig_repr
+    def translate(self, *args):
+        """
+        translate(TriangleMesh self, double const [3] t)
+
+        void
+        TriangleMesh::translate(const double t[3]) 
+        """
+        return _robotsim.TriangleMesh_translate(self, *args)
+
+    def transform(self, *args):
+        """
+        transform(TriangleMesh self, double const [9] R, double const [3] t)
+
+        void
+        TriangleMesh::transform(const double R[9], const double t[3]) 
+        """
+        return _robotsim.TriangleMesh_transform(self, *args)
+
     __swig_setmethods__["indices"] = _robotsim.TriangleMesh_indices_set
     __swig_getmethods__["indices"] = _robotsim.TriangleMesh_indices_get
     if _newclass:indices = _swig_property(_robotsim.TriangleMesh_indices_get, _robotsim.TriangleMesh_indices_set)
@@ -631,8 +678,8 @@ class RobotModelLink(_object):
         RobotModelLink::setTransform(const double R[9], const double t[3])
 
         Sets transformation (R,t) to the world frame. Note: this does NOT
-        *perform inverse kinematics. The transform is overwritten when the
-        *robot's setConfig() method is called. 
+        perform inverse kinematics. The transform is overwritten when the
+        robot's setConfig() method is called. 
         """
         return _robotsim.RobotModelLink_setTransform(self, *args)
 
@@ -894,7 +941,8 @@ class RobotModel(_object):
         getMassMatrix(RobotModel self)
 
         void
-        RobotModel::getMassMatrix(std::vector< std::vector< double > > &B) 
+        RobotModel::getMassMatrix(std::vector< std::vector< double > > &out)
+
         """
         return _robotsim.RobotModel_getMassMatrix(self)
 
@@ -904,7 +952,7 @@ class RobotModel(_object):
 
         void
         RobotModel::getMassMatrixInv(std::vector< std::vector< double > >
-        &Binv) 
+        &out) 
         """
         return _robotsim.RobotModel_getMassMatrixInv(self)
 
@@ -914,7 +962,7 @@ class RobotModel(_object):
 
         void
         RobotModel::getCoriolisForceMatrix(std::vector< std::vector< double >
-        > &C) 
+        > &out) 
         """
         return _robotsim.RobotModel_getCoriolisForceMatrix(self)
 
@@ -923,7 +971,7 @@ class RobotModel(_object):
         getCoriolisForces(RobotModel self)
 
         void
-        RobotModel::getCoriolisForces(std::vector< double > &C) 
+        RobotModel::getCoriolisForces(std::vector< double > &out) 
         """
         return _robotsim.RobotModel_getCoriolisForces(self)
 
@@ -933,7 +981,7 @@ class RobotModel(_object):
 
         void
         RobotModel::getGravityForces(const double g[3], std::vector< double >
-        &G) 
+        &out) 
         """
         return _robotsim.RobotModel_getGravityForces(self, *args)
 
@@ -958,15 +1006,33 @@ class RobotModel(_object):
         return _robotsim.RobotModel_accelFromTorques(self, *args)
 
     def interpolate(self, *args):
-        """interpolate(RobotModel self, doubleVector a, doubleVector b, double u)"""
+        """
+        interpolate(RobotModel self, doubleVector a, doubleVector b, double u)
+
+        void
+        RobotModel::interpolate(const std::vector< double > &a, const
+        std::vector< double > &b, double u, std::vector< double > &out) 
+        """
         return _robotsim.RobotModel_interpolate(self, *args)
 
     def distance(self, *args):
-        """distance(RobotModel self, doubleVector a, doubleVector b) -> double"""
+        """
+        distance(RobotModel self, doubleVector a, doubleVector b) -> double
+
+        double
+        RobotModel::distance(const std::vector< double > &a, const
+        std::vector< double > &b) 
+        """
         return _robotsim.RobotModel_distance(self, *args)
 
     def interpolate_deriv(self, *args):
-        """interpolate_deriv(RobotModel self, doubleVector a, doubleVector b, doubleVector dout)"""
+        """
+        interpolate_deriv(RobotModel self, doubleVector a, doubleVector b, doubleVector dout)
+
+        void
+        RobotModel::interpolate_deriv(const std::vector< double > &a, const
+        std::vector< double > &b, std::vector< double > &dout) 
+        """
         return _robotsim.RobotModel_interpolate_deriv(self, *args)
 
     def selfCollisionEnabled(self, *args):
@@ -979,7 +1045,12 @@ class RobotModel(_object):
         return _robotsim.RobotModel_selfCollisionEnabled(self, *args)
 
     def enableSelfCollision(self, *args):
-        """enableSelfCollision(RobotModel self, int link1, int link2, bool value)"""
+        """
+        enableSelfCollision(RobotModel self, int link1, int link2, bool value)
+
+        void
+        RobotModel::enableSelfCollision(int link1, int link2, bool value) 
+        """
         return _robotsim.RobotModel_enableSelfCollision(self, *args)
 
     def drawGL(self, keepAppearance=True):
@@ -1238,7 +1309,7 @@ class WorldModel(_object):
     The main world class, containing robots, rigid objects, and static
     environment geometry.
 
-    Note that this is just a model and can be changed at will -- in fact
+    Note that this is just a model and can be changed at will in fact
     planners and simulators will make use of a model to "display"
     computed states.
 
@@ -1386,6 +1457,42 @@ class WorldModel(_object):
         """
         return _robotsim.WorldModel_makeTerrain(self, *args)
 
+    def loadRobot(self, *args):
+        """
+        loadRobot(WorldModel self, char const * fn) -> RobotModel
+
+        RobotModel
+        WorldModel::loadRobot(const char *fn) 
+        """
+        return _robotsim.WorldModel_loadRobot(self, *args)
+
+    def loadRigidObject(self, *args):
+        """
+        loadRigidObject(WorldModel self, char const * fn) -> RigidObjectModel
+
+        RigidObjectModel
+        WorldModel::loadRigidObject(const char *fn) 
+        """
+        return _robotsim.WorldModel_loadRigidObject(self, *args)
+
+    def loadTerrain(self, *args):
+        """
+        loadTerrain(WorldModel self, char const * fn) -> TerrainModel
+
+        TerrainModel
+        WorldModel::loadTerrain(const char *fn) 
+        """
+        return _robotsim.WorldModel_loadTerrain(self, *args)
+
+    def loadElement(self, *args):
+        """
+        loadElement(WorldModel self, char const * fn) -> int
+
+        int
+        WorldModel::loadElement(const char *fn) 
+        """
+        return _robotsim.WorldModel_loadElement(self, *args)
+
     def drawGL(self):
         """
         drawGL(WorldModel self)
@@ -1427,19 +1534,47 @@ class IKObjective(_object):
         try: self.this.append(this)
         except: self.this = this
     def link(self):
-        """link(IKObjective self) -> int"""
+        """
+        link(IKObjective self) -> int
+
+        int IKObjective::link()
+        const
+
+        The link that is constrained. 
+        """
         return _robotsim.IKObjective_link(self)
 
     def destLink(self):
-        """destLink(IKObjective self) -> int"""
+        """
+        destLink(IKObjective self) -> int
+
+        int
+        IKObjective::destLink() const
+
+        The destination link, or -1 if fixed to the world. 
+        """
         return _robotsim.IKObjective_destLink(self)
 
     def numPosDims(self):
-        """numPosDims(IKObjective self) -> int"""
+        """
+        numPosDims(IKObjective self) -> int
+
+        int
+        IKObjective::numPosDims() const
+
+        Returns the number of position dimensions constrained (0-3) 
+        """
         return _robotsim.IKObjective_numPosDims(self)
 
     def numRotDims(self):
-        """numRotDims(IKObjective self) -> int"""
+        """
+        numRotDims(IKObjective self) -> int
+
+        int
+        IKObjective::numRotDims() const
+
+        Returns the number of rotation dimensions constrained (0-3) 
+        """
         return _robotsim.IKObjective_numRotDims(self)
 
     def setFixedPoint(self, *args):
@@ -1448,7 +1583,9 @@ class IKObjective(_object):
 
         void
         IKObjective::setFixedPoint(int link, const double plocal[3], const
-        double pworld[3]) 
+        double pworld[3])
+
+        Sets a fixed-point constraint. 
         """
         return _robotsim.IKObjective_setFixedPoint(self, *args)
 
@@ -1458,7 +1595,9 @@ class IKObjective(_object):
 
         void
         IKObjective::setFixedPoints(int link, PyObject *plocals, PyObject
-        *pworlds) 
+        *pworlds)
+
+        Sets a multiple fixed-point constraint. 
         """
         return _robotsim.IKObjective_setFixedPoints(self, *args)
 
@@ -1468,7 +1607,9 @@ class IKObjective(_object):
 
         void
         IKObjective::setFixedTransform(int link, const double R[9], const
-        double t[3]) 
+        double t[3])
+
+        Sets a fixed-transform constraint (R,t) 
         """
         return _robotsim.IKObjective_setFixedTransform(self, *args)
 
@@ -1478,7 +1619,9 @@ class IKObjective(_object):
 
         void
         IKObjective::setRelativePoint(int link1, int link2, const double
-        p1[3], const double p2[3]) 
+        p1[3], const double p2[3])
+
+        Sets a fixed-point constraint relative to link2. 
         """
         return _robotsim.IKObjective_setRelativePoint(self, *args)
 
@@ -1488,7 +1631,9 @@ class IKObjective(_object):
 
         void
         IKObjective::setRelativePoints(int link1, int link2, PyObject *p1s,
-        PyObject *p2s) 
+        PyObject *p2s)
+
+        Sets a multiple fixed-point constraint relative to link2. 
         """
         return _robotsim.IKObjective_setRelativePoints(self, *args)
 
@@ -1498,28 +1643,65 @@ class IKObjective(_object):
 
         void
         IKObjective::setRelativeTransform(int link, int linkTgt, const double
-        R[9], const double t[3]) 
+        R[9], const double t[3])
+
+        Sets a fixed-transform constraint (R,t) relative to linkTgt. 
         """
         return _robotsim.IKObjective_setRelativeTransform(self, *args)
 
     def getPosition(self):
-        """getPosition(IKObjective self)"""
+        """
+        getPosition(IKObjective self)
+
+        void
+        IKObjective::getPosition(double out[3], double out2[3]) const
+
+        Returns the local and global position of the position constraint. 
+        """
         return _robotsim.IKObjective_getPosition(self)
 
     def getPositionDirection(self):
-        """getPositionDirection(IKObjective self)"""
+        """
+        getPositionDirection(IKObjective self)
+
+        void
+        IKObjective::getPositionDirection(double out[3]) const
+
+        For linear and planar constraints, returns the direction. 
+        """
         return _robotsim.IKObjective_getPositionDirection(self)
 
     def getRotation(self):
-        """getRotation(IKObjective self)"""
+        """
+        getRotation(IKObjective self)
+
+        void
+        IKObjective::getRotation(double out[9]) const
+
+        For fixed rotation constraints, returns the orientation. 
+        """
         return _robotsim.IKObjective_getRotation(self)
 
     def getRotationAxis(self):
-        """getRotationAxis(IKObjective self)"""
+        """
+        getRotationAxis(IKObjective self)
+
+        void
+        IKObjective::getRotationAxis(double out[3], double out2[3]) const
+
+        For axis rotation constraints, returns the local and global axes. 
+        """
         return _robotsim.IKObjective_getRotationAxis(self)
 
     def getTransform(self):
-        """getTransform(IKObjective self)"""
+        """
+        getTransform(IKObjective self)
+
+        void
+        IKObjective::getTransform(double out[9], double out2[3]) const
+
+        For fixed-transform constraints, returns the transform (R,T) 
+        """
         return _robotsim.IKObjective_getTransform(self)
 
     __swig_setmethods__["goal"] = _robotsim.IKObjective_goal_set
@@ -1859,31 +2041,63 @@ def SampleTransform(*args):
     """
   return _robotsim.SampleTransform(*args)
 class SimRobotSensor(_object):
-    """Proxy of C++ SimRobotSensor class"""
+    """
+    A sensor on a simulated robot. Retreive this from the controller, and
+    use getMeasurements to get the currently simulated measurement vector.
+
+    type() gives you a string defining the sensor type. measurementNames()
+    gives you a list of names for the measurements.
+
+    C++ includes: robotsim.h 
+    """
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SimRobotSensor, name, value)
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, SimRobotSensor, name)
     __repr__ = _swig_repr
     def __init__(self, *args): 
-        """__init__(SimRobotSensor self, SensorBase * sensor) -> SimRobotSensor"""
+        """
+        __init__(SimRobotSensor self, SensorBase * sensor) -> SimRobotSensor
+
+        SimRobotSensor::SimRobotSensor(SensorBase *sensor) 
+        """
         this = _robotsim.new_SimRobotSensor(*args)
         try: self.this.append(this)
         except: self.this = this
     def name(self):
-        """name(SimRobotSensor self) -> std::string"""
+        """
+        name(SimRobotSensor self) -> std::string
+
+        std::string
+        SimRobotSensor::name() 
+        """
         return _robotsim.SimRobotSensor_name(self)
 
     def type(self):
-        """type(SimRobotSensor self) -> std::string"""
+        """
+        type(SimRobotSensor self) -> std::string
+
+        std::string
+        SimRobotSensor::type() 
+        """
         return _robotsim.SimRobotSensor_type(self)
 
     def measurementNames(self):
-        """measurementNames(SimRobotSensor self) -> std::vector< std::string,std::allocator< std::string > >"""
+        """
+        measurementNames(SimRobotSensor self) -> std::vector< std::string,std::allocator< std::string > >
+
+        std::vector<
+        std::string > SimRobotSensor::measurementNames() 
+        """
         return _robotsim.SimRobotSensor_measurementNames(self)
 
     def getMeasurements(self):
-        """getMeasurements(SimRobotSensor self)"""
+        """
+        getMeasurements(SimRobotSensor self)
+
+        void
+        SimRobotSensor::getMeasurements(std::vector< double > &out) 
+        """
         return _robotsim.SimRobotSensor_getMeasurements(self)
 
     __swig_setmethods__["sensor"] = _robotsim.SimRobotSensor_sensor_set
@@ -1907,7 +2121,8 @@ class SimRobotController(_object):
 
     Arbitrary trajectories can be tracked by using setVelocity over short
     time steps. Force controllers can be implemented using setTorque,
-    again using short time steps.
+    again using short time steps. These set the controller into manual
+    override mode. To reset back to regular motion queue control,
 
     C++ includes: robotsim.h 
     """
@@ -1983,11 +2198,27 @@ class SimRobotController(_object):
         return _robotsim.SimRobotController_getSensedVelocity(self)
 
     def getSensor(self, *args):
-        """getSensor(SimRobotController self, int index) -> SimRobotSensor"""
+        """
+        getSensor(SimRobotController self, int index) -> SimRobotSensor
+
+        SimRobotSensor
+        SimRobotController::getSensor(int index)
+
+        Returns a sensor by index. If out of bounds, a null sensor is
+        returned. 
+        """
         return _robotsim.SimRobotController_getSensor(self, *args)
 
     def getNamedSensor(self, *args):
-        """getNamedSensor(SimRobotController self, std::string const & name) -> SimRobotSensor"""
+        """
+        getNamedSensor(SimRobotController self, std::string const & name) -> SimRobotSensor
+
+        SimRobotSensor SimRobotController::getNamedSensor(const std::string
+        &name)
+
+        Returns a sensor by name. If unavailable, a null sensor is returned.
+
+        """
         return _robotsim.SimRobotController_getNamedSensor(self, *args)
 
     def commands(self):
@@ -2029,8 +2260,8 @@ class SimRobotController(_object):
         setSetting(SimRobotController self, std::string const & name, std::string const & val) -> bool
 
         bool
-        SimRobotController::setSetting(const std::string &name, std::string
-        &val) 
+        SimRobotController::setSetting(const std::string &name, const
+        std::string &val) 
         """
         return _robotsim.SimRobotController_setSetting(self, *args)
 
@@ -2057,7 +2288,14 @@ class SimRobotController(_object):
         return _robotsim.SimRobotController_addMilestone(self, *args)
 
     def remainingTime(self):
-        """remainingTime(SimRobotController self) -> double"""
+        """
+        remainingTime(SimRobotController self) -> double
+
+        double
+        SimRobotController::remainingTime() const
+
+        Returns the remaining duration of the motion queue. 
+        """
         return _robotsim.SimRobotController_remainingTime(self)
 
     def setVelocity(self, *args):
@@ -2097,7 +2335,15 @@ class SimRobotController(_object):
         return _robotsim.SimRobotController_setPIDCommand(self, *args)
 
     def setManualMode(self, *args):
-        """setManualMode(SimRobotController self, bool enabled)"""
+        """
+        setManualMode(SimRobotController self, bool enabled)
+
+        void
+        SimRobotController::setManualMode(bool enabled)
+
+        Turns on/off manual mode, if either the setTorque or setPID command
+        were previously set. 
+        """
         return _robotsim.SimRobotController_setManualMode(self, *args)
 
     def setPIDGains(self, *args):
@@ -2106,7 +2352,9 @@ class SimRobotController(_object):
 
         void
         SimRobotController::setPIDGains(const std::vector< double > &kP, const
-        std::vector< double > &kI, const std::vector< double > &kD) 
+        std::vector< double > &kI, const std::vector< double > &kD)
+
+        Sets the PID gains. 
         """
         return _robotsim.SimRobotController_setPIDGains(self, *args)
 
@@ -2251,7 +2499,11 @@ class Simulator(_object):
         """
         __init__(Simulator self, WorldModel model) -> Simulator
 
-        Simulator::Simulator(const WorldModel &model) 
+        Simulator::Simulator(const WorldModel &model)
+
+        Constructs the simulator from a WorldModel. If the WorldModel was
+        loaded from an XML file, then the simulation setup is loaded from it.
+
         """
         this = _robotsim.new_Simulator(*args)
         try: self.this.append(this)
@@ -2316,11 +2568,26 @@ class Simulator(_object):
         return _robotsim.Simulator_simulate(self, *args)
 
     def fakeSimulate(self, *args):
-        """fakeSimulate(Simulator self, double t)"""
+        """
+        fakeSimulate(Simulator self, double t)
+
+        void
+        Simulator::fakeSimulate(double t)
+
+        Advances a faked simulation by time t, and updates the world model
+        from the faked simulation state. 
+        """
         return _robotsim.Simulator_fakeSimulate(self, *args)
 
     def getTime(self):
-        """getTime(Simulator self) -> double"""
+        """
+        getTime(Simulator self) -> double
+
+        double
+        Simulator::getTime()
+
+        Returns the simulation time. 
+        """
         return _robotsim.Simulator_getTime(self)
 
     def updateWorld(self):
@@ -2337,15 +2604,39 @@ class Simulator(_object):
         return _robotsim.Simulator_updateWorld(self)
 
     def getActualConfig(self, *args):
-        """getActualConfig(Simulator self, int robot)"""
+        """
+        getActualConfig(Simulator self, int robot)
+
+        void
+        Simulator::getActualConfig(int robot, std::vector< double > &out)
+
+        Returns the current actual configuration of the robot from the
+        simulator. 
+        """
         return _robotsim.Simulator_getActualConfig(self, *args)
 
     def getActualVelocity(self, *args):
-        """getActualVelocity(Simulator self, int robot)"""
+        """
+        getActualVelocity(Simulator self, int robot)
+
+        void
+        Simulator::getActualVelocity(int robot, std::vector< double > &out)
+
+        Returns the current actual velocity of the robot from the simulator.
+
+        """
         return _robotsim.Simulator_getActualVelocity(self, *args)
 
     def getActualTorques(self, *args):
-        """getActualTorques(Simulator self, int robot)"""
+        """
+        getActualTorques(Simulator self, int robot)
+
+        void
+        Simulator::getActualTorques(int robot, std::vector< double > &out)
+
+        Returns the current actual torques on the robot's drivers from the
+        simulator 
+        """
         return _robotsim.Simulator_getActualTorques(self, *args)
 
     def enableContactFeedback(self, *args):
@@ -2481,7 +2772,16 @@ class Simulator(_object):
         return _robotsim.Simulator_getBody(self, *args)
 
     def getJointForces(self, *args):
-        """getJointForces(Simulator self, RobotModelLink link)"""
+        """
+        getJointForces(Simulator self, RobotModelLink link)
+
+        void
+        Simulator::getJointForces(const RobotModelLink &link, double out[6])
+
+        Returns the joint force and torque local to the link, as would be read
+        by a force-torque sensor mounted at the given link's origin. The 6
+        entries are (fx,fy,fz,mx,my,mz) 
+        """
         return _robotsim.Simulator_getJointForces(self, *args)
 
     def setGravity(self, *args):

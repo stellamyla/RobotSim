@@ -1,9 +1,9 @@
 from robot import *
-from rootfind import rootfind
+from robot import rootfind
 import time
 
 world = WorldModel()
-world.readFile('../tx90_files/tx90blocks.xml')
+world.readFile('../data/tx90blocks.xml')
 r = world.robot(0)
 sim = Simulator(world)
 

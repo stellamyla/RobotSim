@@ -1,7 +1,7 @@
-from motionplanning import cspace
+import cspace
 import robotsim
 import robotcollide
-from motionplanning.cspaceutils import AdaptiveCSpace
+from cspaceutils import AdaptiveCSpace
 
 class RobotCSpace(AdaptiveCSpace):
     """A basic robot cspace that allows collision free motion"""

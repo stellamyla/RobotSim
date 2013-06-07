@@ -1,7 +1,8 @@
 #include "XmlWorld.h"
+#include <utils/stringutils.h>
 
-XmlRobot::XmlRobot(TiXmlElement* _element)
-  :e(_element)
+XmlRobot::XmlRobot(TiXmlElement* _element,string _path)
+  :e(_element),path(_path)
 {}
 
 bool XmlRobot::GetRobot(Robot& robot)
@@ -11,8 +12,9 @@ bool XmlRobot::GetRobot(Robot& robot)
     fprintf(stderr,"XmlRobot: element does not contain file attribute\n");
     return false;
   }
-  if(!robot.Load(fn)) {
-    fprintf(stderr,"XmlRobot: error loading %s\n",fn);
+  string sfn = path + string(fn);
+  if(!robot.Load(sfn.c_str())) {
+    fprintf(stderr,"XmlRobot: error loading %s\n",sfn.c_str());
     return false;
   }
   Vector q;
@@ -28,8 +30,8 @@ bool XmlRobot::GetRobot(Robot& robot)
 }
 
 
-XmlRigidObject::XmlRigidObject(TiXmlElement* _element)
-  :e(_element)
+XmlRigidObject::XmlRigidObject(TiXmlElement* _element,string _path)
+  :e(_element),path(_path)
 {}
 
 bool XmlRigidObject::GetObject(RigidObject& obj)
@@ -45,8 +47,9 @@ bool XmlRigidObject::GetObject(RigidObject& obj)
 
   const char* fn = e->Attribute("file");
   if(fn) {
-    if(!obj.Load(fn)) {
-      fprintf(stderr,"XmlRigidObject: error loading obj file %s\n",fn);
+    string sfn = path + string(fn);
+    if(!obj.Load(sfn.c_str())) {
+      fprintf(stderr,"XmlRigidObject: error loading obj file %s\n",sfn.c_str());
       return false;
     }
   }
@@ -54,8 +57,9 @@ bool XmlRigidObject::GetObject(RigidObject& obj)
   if(geom) {
     const char* fn = geom->Attribute("mesh");
     if(fn) {
-      if(!obj.mesh.Load(fn)) {
-	fprintf(stderr,"XmlRigidObject: error loading meshfile %s\n",fn);
+      string sfn = path + string(fn);
+      if(!obj.mesh.Load(sfn.c_str())) {
+	fprintf(stderr,"XmlRigidObject: error loading meshfile %s\n",sfn.c_str());
 	return false;
       }
     }
@@ -153,8 +157,8 @@ bool XmlRigidObject::GetObject(RigidObject& obj)
   return true;
 }
 
-XmlTerrain::XmlTerrain(TiXmlElement* _element)
-  :e(_element)
+XmlTerrain::XmlTerrain(TiXmlElement* _element,string _path)
+  :e(_element),path(_path)
 {}
 
 bool XmlTerrain::GetTerrain(Environment& env)
@@ -164,8 +168,9 @@ bool XmlTerrain::GetTerrain(Environment& env)
     fprintf(stderr,"XmlTerrain: element does not contain file attribute\n");
     return false;
   }
-  if(!env.Load(fn)) {
-    fprintf(stderr,"XmlTerrain: error loading %s\n",fn);
+  string sfn = path+string(fn);
+  if(!env.Load(sfn.c_str())) {
+    fprintf(stderr,"XmlTerrain: error loading %s\n",sfn.c_str());
     return false;
   }
 
@@ -273,12 +278,13 @@ XmlWorld::XmlWorld()
 bool XmlWorld::Load(const string& fn)
 {
   if(!doc.LoadFile(fn.c_str())) return false;
-  return Load(doc.RootElement());
+  return Load(doc.RootElement(),GetFilePath(fn));
 }
 
-bool XmlWorld::Load(TiXmlElement* e)
+bool XmlWorld::Load(TiXmlElement* e,string _path)
 {
   elem = e;
+  path = _path;
   if(0 != strcmp(e->Value(),"world")) return false;
   return true;
 }
@@ -316,7 +322,7 @@ bool XmlWorld::GetWorld(RobotWorld& world)
     string sname = "Robot";
     if(name) sname=name;
     Robot* r = new Robot;
-    if(!XmlRobot(e).GetRobot(*r)) {
+    if(!XmlRobot(e,path).GetRobot(*r)) {
       printf("XmlWorld: Unable to load robot %s\n",sname.c_str());
       delete r;
       return false;
@@ -331,7 +337,7 @@ bool XmlWorld::GetWorld(RobotWorld& world)
     string sname = "Object";
     if(name) sname=name;
     RigidObject* o = new RigidObject;
-    if(!XmlRigidObject(e).GetObject(*o)) {
+    if(!XmlRigidObject(e,path).GetObject(*o)) {
       printf("XmlWorld: Unable to load rigid object %s\n",sname.c_str());
       delete o;
       return false;
@@ -346,7 +352,7 @@ bool XmlWorld::GetWorld(RobotWorld& world)
     string sname = "Terrain";
     if(name) sname=name;
     Environment* t = new Environment;
-    if(!XmlTerrain(e).GetTerrain(*t)) {
+    if(!XmlTerrain(e,path).GetTerrain(*t)) {
       printf("XmlWorld: Unable to load terrain %s\n",sname.c_str());
       delete t;
       return false;

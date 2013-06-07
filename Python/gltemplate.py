@@ -2,10 +2,7 @@
 
 import sys
 from robot import *
-from robot import robotcollide
-from geometry import vectorops
-from geometry import collide
-from geometry.glprogram import *
+from robot.glprogram import *
 
 class MyGLViewer(GLRealtimeProgram):
     def __init__(self,world):
@@ -24,10 +21,15 @@ class MyGLViewer(GLRealtimeProgram):
         self.sim.updateWorld()
         self.world.drawGL()
 
+    def control_loop(self):
+        #Put your control handler here
+        pass
+
     def idle(self):
         #Put your idle loop handler here
         #the current example simulates with the current time step self.dt
         if self.simulate:
+            self.control_loop()
             self.sim.simulate(self.dt)
             glutPostRedisplay()
 
@@ -72,6 +74,10 @@ class MyGLViewer(GLRealtimeProgram):
 
 
 if __name__ == "__main__":
+    print "gltemplate.py: This example demonstrates how to simulate a world and read user input"
+    if len(sys.argv)<=1:
+        print "USAGE: gltemplate.py [world_file]"
+        exit()
     world = WorldModel()
     for fn in sys.argv[1:]:
         res = world.readFile(fn)

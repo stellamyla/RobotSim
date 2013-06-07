@@ -92,9 +92,6 @@ UserTrialsMT:  lib
 
 python: lib
 	cd Python/robot; make
-	cd Python/geometry; make
-	cd Python/motionplanning; make
-	cd Python/rootfind; make
 
 python-docs:
 	cd Python/robot; make docs

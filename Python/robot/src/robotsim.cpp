@@ -5,8 +5,8 @@
 #include "Control/FeedforwardController.h"
 #include "Simulation/WorldSimulation.h"
 #include "Modeling/Interpolate.h"
-#include "Xml/XmlWorld.h"
-#include "Xml/XmlODE.h"
+#include "IO/XmlWorld.h"
+#include "IO/XmlODE.h"
 #include <robotics/NewtonEuler.h>
 #include <GLdraw/drawextra.h>
 #include <GLdraw/drawMesh.h>

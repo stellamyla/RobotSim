@@ -7,30 +7,33 @@
 class XmlRobot
 {
  public:
-  XmlRobot(TiXmlElement* element);
+  XmlRobot(TiXmlElement* element,string path=string());
   bool GetRobot(Robot& robot);
   //void GetController();
 
   TiXmlElement* e;
+  string path;
 };
 
 class XmlRigidObject
 {
  public:
-  XmlRigidObject(TiXmlElement* element);
+  XmlRigidObject(TiXmlElement* element,string path=string());
   bool GetObject(RigidObject& object);
   //void GetGraspGenerator();
 
   TiXmlElement* e;
+  string path;
 };
 
 class XmlTerrain
 {
  public:
-  XmlTerrain(TiXmlElement* element);
+  XmlTerrain(TiXmlElement* element,string path=string());
   bool GetTerrain(Environment& env);
 
   TiXmlElement* e;
+  string path;
 };
 
 class XmlWorld
@@ -38,7 +41,7 @@ class XmlWorld
  public:
   XmlWorld();
   bool Load(const string& fn);
-  bool Load(TiXmlElement* e);
+  bool Load(TiXmlElement* e,string path=string());
   bool GetWorld(RobotWorld& world);
   TiXmlElement* GetElement(const string& name);
   TiXmlElement* GetElement(const string& name,int index);
@@ -48,6 +51,7 @@ class XmlWorld
 
   TiXmlDocument doc;
   TiXmlElement* elem;
+  string path;
   Vector3 goals[10];
   int goalCount;
 };

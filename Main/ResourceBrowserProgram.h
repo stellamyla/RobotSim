@@ -169,7 +169,7 @@ bool ResourceBrowserProgram::LoadCommandLine(int argc,char** argv)
 	}
 	if(0 == strcmp(doc.RootElement()->Value(),"world")) {
 	  XmlWorld xmlWorld;
-	  if(!xmlWorld.Load(doc.RootElement())) {
+	  if(!xmlWorld.Load(doc.RootElement(),GetFilePath(argv[i]))) {
 	    printf("Error loading world file %s\n",argv[i]);
 	    return 0;
 	  }

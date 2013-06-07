@@ -16,6 +16,14 @@
 using namespace Math3D;
 using namespace GLDraw;
 
+//HD 720p settings
+const static int MOVIE_W = 1280;
+const static int MOVIE_H = 720;
+
+//VGA
+//const static int MOVIE_W = 640;
+//const static int MOVIE_H = 480;
+
 enum {
   STORE_TO_LIBRARY_ID = RESOURCE_BROWSER_GLUI_ID_END,
   OVERWRITE_LIBRARY_ID,
@@ -391,7 +399,7 @@ public:
 	int totalh = glutGet(GLUT_WINDOW_HEIGHT);
 	int toolbarw = totalw - viewport.w;
 	int toolbarh = totalh - viewport.h;
-	glutReshapeWindow(toolbarw+640,toolbarh+480);
+	glutReshapeWindow(toolbarw+MOVIE_W,toolbarh+MOVIE_H);
       }
       ToggleMovie();
       ResourceBrowserProgram::viewResource.pathTime=0;
