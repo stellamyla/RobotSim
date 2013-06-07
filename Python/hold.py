@@ -1,5 +1,9 @@
-from geometry import vectorops
-from geometry import so3
+"""This module helps load and read holds.  Defines
+the Hold class, and the functions readHold(text) and writeHold(h).
+"""
+
+from robot import vectorops
+from robot import so3
 from robot.loader import *
 
 class Hold:

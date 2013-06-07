@@ -1,3 +1,9 @@
+"""This script converts a multipath to a piecewise linear timed trajectory.
+Usage: python multipath_to_path.py [inpath.xml] [outtraj].
+
+To tweak the speeds, change the conversion settings in the script.
+"""
+
 import math
 import sys
 import xml.etree.ElementTree as ET

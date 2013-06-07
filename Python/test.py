@@ -1,3 +1,5 @@
+"""A test script that does some assorted testing of the robot module"""
+
 from robot import *
 from robot import rootfind
 import time

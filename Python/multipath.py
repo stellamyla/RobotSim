@@ -1,3 +1,10 @@
+"""This module defines the MultiPath class, and methods for loading and
+saving multipaths from xml files.
+
+It can also be run in script mode to print stats about the path, to time-scale
+or reverse a path, and concatenate multiple MultiPaths together.
+"""
+
 from hold import *
 from robot import *
 from robot.loader import *

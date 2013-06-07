@@ -1,3 +1,7 @@
+"""Generates a planar robot with N joints.
+Usage: python make_planar_robot.py [N]
+"""
+
 import sys
 
 n = int(sys.argv[1])

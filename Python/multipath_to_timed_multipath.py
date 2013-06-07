@@ -1,3 +1,6 @@
+"""This script converts an untimed multipath to a timed one.  To change
+the settings, edit the script."""
+
 import math
 import sys
 import xml.etree.ElementTree as ET
