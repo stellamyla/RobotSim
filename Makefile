@@ -14,9 +14,26 @@ LIBROBOTSIM = -L$(LIBDIR) -lRobotSim
 default: RobotTest 
 .PHONY: RobotTest SimTest SimUtil PosMeasure UserTrials UserTrialsMT deps lib
 
-deps:
+deps: dep-KrisLibrary dep-tinyxml dep-glui dep-ode
+	;
+
+dep-KrisLibrary:
 	cd Library/KrisLibrary; make KrisLibrary
-	cd Library/tinyxml; make 
+
+dep-tinyxml:
+	cd Library/tinyxml; make
+
+dep-glui: 
+	cd Library/glui-2.36/src; make
+
+dep-ode:
+	cd Library/ode-0.11.1; ./configure --enable-shared --with-trimesh=none
+	cd Library/ode-0.11.1; make install
+
+unpack-deps:
+	cd Library; git clone https://github.com/krishauser/KrisLibrary
+	cd Library; tar xvzf ode-0.11.1.tar.gz
+	cd Library; tar xvzf glui-2.36.tgz
 
 lib:
 	cd Modeling; make
@@ -78,3 +95,6 @@ python: lib
 	cd Python/geometry; make
 	cd Python/motionplanning; make
 	cd Python/rootfind; make
+
+python-docs:
+	cd Python/robot; make docs

@@ -4,8 +4,8 @@
 #include "Simulation/WorldSimulation.h"
 #include "Modeling/MultiPath.h"
 #include "Planning/RobotTimeScaling.h"
-#include "Xml/XmlWorld.h"
-#include "Xml/XmlODE.h"
+#include "IO/XmlWorld.h"
+#include "IO/XmlODE.h"
 #include "WorldViewProgram.h"
 #include "View/ViewPlot.h"
 #include <utils/stringutils.h>
