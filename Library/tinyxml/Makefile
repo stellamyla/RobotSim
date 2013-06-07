@@ -22,7 +22,7 @@ TINYXML_USE_STL := YES
 CC     := gcc
 CXX    := g++
 LD     := g++
-AR     := ar rc
+AR     := ar rcs
 RANLIB := ranlib
 
 DEBUG_CFLAGS     := -Wall -Wno-format -g -DDEBUG
@@ -123,6 +123,10 @@ clean:
 
 depend:
 	#makedepend ${INCS} ${SRCS}
+
+lib: ${OBJS}
+	${AR} libtinyxml.a ${OBJS}
+	${RANLIB} libtinyxml.a
 
 tinyxml.o: tinyxml.h tinystr.h
 tinyxmlparser.o: tinyxml.h tinystr.h

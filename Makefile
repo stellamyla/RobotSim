@@ -21,7 +21,7 @@ dep-KrisLibrary:
 	cd Library/KrisLibrary; make KrisLibrary
 
 dep-tinyxml:
-	cd Library/tinyxml; make
+	cd Library/tinyxml; make lib
 
 dep-glui: 
 	cd Library/glui-2.36/src; make
