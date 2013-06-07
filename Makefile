@@ -26,6 +26,8 @@ dep-tinyxml:
 dep-glui: 
 	cd Library/glui-2.36/src; make
 
+#use the following line to configure ode with double precision.  Also change Makefile.config
+#cd Library/ode-0.11.1; ./configure --enable-shared --enable-double-precision --with-trimesh=none
 dep-ode:
 	cd Library/ode-0.11.1; ./configure --enable-shared --with-trimesh=none
 	cd Library/ode-0.11.1; make

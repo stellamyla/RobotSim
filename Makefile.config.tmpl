@@ -71,14 +71,15 @@ ifeq ($(CYGWIN),1)
      DEFINES += CYGWIN
 endif
 
+# this turns on double precision in ODE
+#DEFINES += dDOUBLE
 # if you're running cygwin on windows, this allows you to build GestureGUI
-DEFINES += WM_TOUCH_SUPPORT
+#DEFINES += WM_TOUCH_SUPPORT
 # this allows you to use the 3Dconnexion mouse
-DEFINES += THREED_MOUSE_SUPPORT
+#DEFINES += THREED_MOUSE_SUPPORT
 
 #edit these flags if desired, they're passed to gcc
-#CPPFLAGS= -O3 -Wall
-CPPFLAGS= -g -O2 -Wall -Wno-uninitialized 
+CPPFLAGS= -g -fPIC -O2 -Wall -Wno-uninitialized 
 
 ifeq ($(CYGWIN),1)  #different paths for cygwin
   ifeq ($(FREEGLUT),1)
