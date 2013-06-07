@@ -27,7 +27,7 @@ assimpLibDir=assimpDir+'/lib'
 
 
 #needed for KrisLibrary to link
-kllibs = ['KrisLibrary','assimp','tinyxml','glpk','glui']
+kllibs = ['KrisLibrary','tinyxml','glpk','glui']
 if on_cygwin:
     kllibs[-1] = 'opengl32'
     kllibs.append('glut32')
