@@ -42,6 +42,7 @@ ROBO=Library/KrisLibrary/Robotics
 ODE=/usr/local
 KRISLIB=Library/KrisLibrary
 FREEGLUT=1
+ODEDOUBLE=1
 
 ## Mac Settings
 #TINYXML=Library/tinyxml
@@ -56,6 +57,7 @@ FREEGLUT=1
 #ODE=/opt/local
 #KRISLIB=Library/KrisLibrary
 #FREEGLUT=0
+#ODEDOUBLE=0
 
 ##################################################
 # Probably don't have to modify the following,
@@ -74,8 +76,12 @@ ifeq ($(CYGWIN),1)
      DEFINES+=CYGWIN
 endif
 
-# this turns on double precision in ODE
-DEFINES += dDOUBLE
+ODECONFIG = --enable-shared --with-trimesh=none
+ifeq ($(ODEDOUBLE),1)
+     DEFINES += dDOUBLE
+     ODECONFIG += --enable-double-precision
+endif
+
 # if you're running cygwin on windows, this allows you to build GestureGUI
 #DEFINES += WM_TOUCH_SUPPORT
 # this allows you to use the 3Dconnexion mouse
