@@ -55,6 +55,7 @@ clean:
 	cd Control; make clean
 	cd Planning; make clean
 	cd IO; make clean
+	cd View; make clean
 	rm $(LIBDIR)/*.a
 
 RobotTest: lib
