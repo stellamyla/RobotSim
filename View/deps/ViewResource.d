@@ -103,7 +103,7 @@ ViewResource.o ViewResource.d: ViewResource.cpp ViewResource.h ../Modeling/Resou
  ../Library/KrisLibrary/planning/GeodesicSpace.h \
  ../Library/KrisLibrary/utils/ArrayMapping.h \
  ../Planning/RobotTimeScaling.h ../Modeling/MultiPath.h \
- ../Modeling/Interpolate.h ../Library/KrisLibrary/GLdraw/drawExtra.h \
+ ../Modeling/Interpolate.h ../Library/KrisLibrary/GLdraw/drawextra.h \
  ../Library/KrisLibrary/GLdraw/GL.h \
  ../Library/KrisLibrary/GLdraw/drawgeometry.h \
  ../Library/KrisLibrary/robotics/IKFunctions.h \

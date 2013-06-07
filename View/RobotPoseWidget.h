@@ -7,8 +7,19 @@
 #include "ViewRobot.h"
 using namespace GLDraw;
 
-/** @ingroup View
- * @brief A widget that allows the robot's driven links to be posed.
+/* @defgroup View
+ * @brief Definitions of OpenGL drawing routines and UI widgets.
+ */
+
+/** @file View/RobotPoseWidget.h
+ * @ingroup View
+ * @brief Common robot posing routines
+ */
+
+/** @addtogroup View */
+/** @{ */
+
+/** @brief A widget that allows the robot's driven links to be posed.
  */
 class RobotLinkPoseWidget : public Widget
 {
@@ -30,8 +41,7 @@ public:
   Vector3 hoverPt;
 };
 
-/** @ingroup View
- * @brief A widget that allows creating and editing IK constraints
+/** @brief A widget that allows creating and editing IK constraints
  */
 class RobotIKPoseWidget : public WidgetSet
 {
@@ -67,7 +77,7 @@ public:
   vector<TransformWidget> poseWidgets;
 };
 
-/** @ingroup A widget that allows full posing and editing of the robot config including
+/** A widget that allows full posing and editing of the robot config including
  * IK constraints and base motion.
  */
 class RobotPoseWidget : public WidgetSet
@@ -107,5 +117,6 @@ public:
   Ray3D attachRay;
 };
 
+/** @} */
 
 #endif
