@@ -2,7 +2,7 @@
 #include "Planning/RobotCSpace.h"
 #include "Planning/RobotTimeScaling.h"
 #include "Modeling/Interpolate.h"
-#include <GLdraw/drawExtra.h>
+#include <GLdraw/drawextra.h>
 #include <GLdraw/drawgeometry.h>
 #include <robotics/IKFunctions.h>
 #include <sstream>
