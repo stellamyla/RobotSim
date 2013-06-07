@@ -9,26 +9,20 @@
 
 CC = g++
 
+
+uname := $(shell sh -c 'uname 2>/dev/null || echo not')
 uname_O := $(shell sh -c 'uname -o 2>/dev/null || echo not')
-uname := $(shell sh -c 'uname -o 2>/dev/null || echo not')
 
-BUILDNAME=unknownOS
-#BUILDNAME=MacOSX
-
-ifneq ($(OSTYPE),)
-  BUILDNAME=$(OSTYPE)
-endif
-ifneq ($(OS),)
-  BUILDNAME=$(OS)
-endif
 CYGWIN = 0
+LINUX = 0
+MAC_OS_X = 0
 ifeq ($(uname_O),Cygwin)
 	CYGWIN = 1
 endif
 ifeq ($(uname),Linux)
-	BUILDNAME=linux
+	LINUX = 1
 endif
-ifeq ($(BUILDNAME),MacOSX)
+ifeq (OSTYPE,MacOSX)
 	MAC_OS_X = 1
 endif
 
@@ -42,7 +36,7 @@ GLUI = Library/glui-2.36/src
 #OPT++ = Library/OPT++2.1
 ROBO = Library/KrisLibrary/Robotics
 #CLAPACK = Library/CLAPACK
-ODE = Library/ode
+ODE = Library/ode-0.11.1
 KRISLIB = Library/KrisLibrary
 FREEGLUT = 0
 
@@ -77,9 +71,14 @@ ifeq ($(CYGWIN),1)
      DEFINES += CYGWIN
 endif
 
+# if you're running cygwin on windows, this allows you to build GestureGUI
+DEFINES += WM_TOUCH_SUPPORT
+# this allows you to use the 3Dconnexion mouse
+DEFINES += THREED_MOUSE_SUPPORT
+
 #edit these flags if desired, they're passed to gcc
 #CPPFLAGS= -O3 -Wall
-CPPFLAGS= -g -O2 -Wall -Wno-uninitialized -fPIC
+CPPFLAGS= -g -O2 -Wall -Wno-uninitialized 
 
 ifeq ($(CYGWIN),1)  #different paths for cygwin
   ifeq ($(FREEGLUT),1)
@@ -108,15 +107,17 @@ endif
 GLUTINCLUDE = $(GLUI)/include/GL
 PQPLIBDIR = $(PQP)/lib
 #LAPACKLIBDIR = $(CLAPACK)/libs
-#ODELIBDIR = $(ODE)/lib
-ODELIBDIR = /usr/local/lib
+#Uncomment this if ODE was built using 'make' 
+ODELIBDIR = $(ODE)/ode/src/.libs
+#uncomment this if ODE was built using 'make install'
+#ODELIBDIR = /usr/local/lib
 TINYXMLLIBDIR = $(TINYXML)
 DEFINES += TIXML_USE_STL
 
 KRISLIBINCLUDE = $(KRISLIB)
 
 KRISLIBS = Robotics noise spline statistics GLdraw camera optimization geometry meshing math3d math image utils
-KRISLIBDIR = $(KRISLIB)/libs_$(BUILDNAME)
+KRISLIBDIR = $(KRISLIB)/lib
 
 #defines for Makefile and Makefile.template
 
@@ -128,7 +129,7 @@ else
 	LIBDIRS =  $(GLUTLIBDIR) $(PQPLIBDIR) $(GLPK)/src $(KRISLIBDIR) $(LAPACKLIBDIR) $(ODELIBDIR) $(TINYXMLLIBDIR)
 endif
 
-LIBS = KrisLibrary $(GLUTLIBS) ode tinyxml 
+LIBS = KrisLibrary $(GLUTLIBS) ode tinyxml glpk stdc++
 
 #turn this on if you built KrisLibrary with Assimp loading
 HAVE_ASSIMP=0

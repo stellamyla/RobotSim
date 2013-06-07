@@ -28,7 +28,7 @@ dep-glui:
 
 dep-ode:
 	cd Library/ode-0.11.1; ./configure --enable-shared --with-trimesh=none
-	cd Library/ode-0.11.1; make install
+	cd Library/ode-0.11.1; make
 
 unpack-deps:
 	cd Library; git clone https://github.com/krishauser/KrisLibrary
