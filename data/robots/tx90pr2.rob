@@ -17,7 +17,7 @@ velMaxDeg  0    400    400      430    540    475    760
 #accMaxDeg  0    800    800      800    800     800    800
 #velMaxDeg  0    200    200      215    270    235    380
 accMaxDeg  0    400    400      400    400     400    400
-geometry   "data/tx90l/part6.tri" "data/tx90l/part5.tri" "data/tx90l/part4.tri" "data/tx90l/part3.tri" "data/tx90l/part2.tri" "data/tx90l/part1.tri" ""
+geometry   "tx90l/part6.tri" "tx90l/part5.tri" "tx90l/part4.tri" "tx90l/part3.tri" "tx90l/part2.tri" "tx90l/part1.tri" ""
 mass       20 10 10 5 5 1 0.1
 automass
 torqueMax  0 800 600 400 200 200 100
@@ -33,7 +33,7 @@ dryFriction 20 20 10 5 1 1
 #servoD  80 60 40 20 20 10
 #dryFriction 0.5 0.5 0.5 0.1 0.1 0.1
 
-mount 6 "data/pr2gripper.rob"  0 0 -1    0 1  0     1 0 0    0 0 0.025
+mount 6 "pr2gripper.rob"  0 0 -1    0 1  0     1 0 0    0 0 0.025
 
 noselfcollision 0 2
 noselfcollision 0 3

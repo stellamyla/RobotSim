@@ -98,19 +98,19 @@ qmaxdeg inf inf inf inf inf inf \
 	170 90 180 160 135 160 \
 	170 90 180 160 135 160 
 
-geometry   ""   ""   ""   ""    ""    "data/athlete/hex.tri" \
-	"data/athlete/hipyaw.tri" "data/athlete/hippitch.tri" "data/athlete/kneepitch.tri" "data/athlete/kneeroll.tri" "data/athlete/anklepitch.tri" "data/athlete/ankleroll.tri" \
-	"data/athlete/hipyaw.tri" "data/athlete/hippitch.tri" "data/athlete/kneepitch.tri" "data/athlete/kneeroll.tri" "data/athlete/anklepitch.tri" "data/athlete/ankleroll.tri" \
-	"data/athlete/hipyaw.tri" "data/athlete/hippitch.tri" "data/athlete/kneepitch.tri" "data/athlete/kneeroll.tri" "data/athlete/anklepitch.tri" "data/athlete/ankleroll.tri" \
-	"data/athlete/hipyaw.tri" "data/athlete/hippitch.tri" "data/athlete/kneepitch.tri" "data/athlete/kneeroll.tri" "data/athlete/anklepitch.tri" "data/athlete/ankleroll.tri" \
-	"data/athlete/hipyaw.tri" "data/athlete/hippitch.tri" "data/athlete/kneepitch.tri" "data/athlete/kneeroll.tri" "data/athlete/anklepitch.tri" "data/athlete/ankleroll.tri" \
-	"data/athlete/hipyaw.tri" "data/athlete/hippitch.tri" "data/athlete/kneepitch.tri" "data/athlete/kneeroll.tri" "data/athlete/anklepitch.tri" "data/athlete/ankleroll.tri" 
-mount 11 "data/athlete/wheel_scaled.tri" 1 0 0 0 1 0 0 0 1 0.184 0 0
-mount 17 "data/athlete/wheel_scaled.tri" 1 0 0 0 1 0 0 0 1 0.184 0 0 
-mount 23 "data/athlete/wheel_scaled.tri"  1 0 0 0 1 0 0 0 1 0.184 0 0
-mount 29 "data/athlete/wheel_scaled.tri"  1 0 0 0 1 0 0 0 1 0.184 0 0
-mount 35 "data/athlete/wheel_scaled.tri"  1 0 0 0 1 0 0 0 1 0.184 0 0
-mount 41 "data/athlete/wheel_scaled.tri"  1 0 0 0 1 0 0 0 1 0.184 0 0
+geometry   ""   ""   ""   ""    ""    "athlete/hex.tri" \
+	"athlete/hipyaw.tri" "athlete/hippitch.tri" "athlete/kneepitch.tri" "athlete/kneeroll.tri" "athlete/anklepitch.tri" "athlete/ankleroll.tri" \
+	"athlete/hipyaw.tri" "athlete/hippitch.tri" "athlete/kneepitch.tri" "athlete/kneeroll.tri" "athlete/anklepitch.tri" "athlete/ankleroll.tri" \
+	"athlete/hipyaw.tri" "athlete/hippitch.tri" "athlete/kneepitch.tri" "athlete/kneeroll.tri" "athlete/anklepitch.tri" "athlete/ankleroll.tri" \
+	"athlete/hipyaw.tri" "athlete/hippitch.tri" "athlete/kneepitch.tri" "athlete/kneeroll.tri" "athlete/anklepitch.tri" "athlete/ankleroll.tri" \
+	"athlete/hipyaw.tri" "athlete/hippitch.tri" "athlete/kneepitch.tri" "athlete/kneeroll.tri" "athlete/anklepitch.tri" "athlete/ankleroll.tri" \
+	"athlete/hipyaw.tri" "athlete/hippitch.tri" "athlete/kneepitch.tri" "athlete/kneeroll.tri" "athlete/anklepitch.tri" "athlete/ankleroll.tri" 
+mount 11 "athlete/wheel_scaled.tri" 1 0 0 0 1 0 0 0 1 0.184 0 0
+mount 17 "athlete/wheel_scaled.tri" 1 0 0 0 1 0 0 0 1 0.184 0 0 
+mount 23 "athlete/wheel_scaled.tri"  1 0 0 0 1 0 0 0 1 0.184 0 0
+mount 29 "athlete/wheel_scaled.tri"  1 0 0 0 1 0 0 0 1 0.184 0 0
+mount 35 "athlete/wheel_scaled.tri"  1 0 0 0 1 0 0 0 1 0.184 0 0
+mount 41 "athlete/wheel_scaled.tri"  1 0 0 0 1 0 0 0 1 0.184 0 0
 
 geomscale 1 1 1 1 1 0.01 \
 	0.01 0.01 0.01 0.01 0.01 0.01 \

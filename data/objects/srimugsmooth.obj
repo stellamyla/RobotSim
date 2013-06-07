@@ -1,4 +1,4 @@
-mesh "data/objects/srimugsmooth.tri"
+mesh "srimugsmooth.tri"
 T 1 0 0 0 1 0 0 0 1      0.5 0.2 0.2
 mass 0.1
 autoMass

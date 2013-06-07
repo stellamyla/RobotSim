@@ -1,4 +1,4 @@
-mesh "data/objects/cylinder.tri"
+mesh "cylinder.tri"
 geomscale 0.025 0.025 0.2
 geomtranslate 0 0 -0.1
 T 1 0 0 0 1 0 0 0 1      0.0 0.0 0.0

@@ -1,4 +1,4 @@
-### Kinematics of the PR2 arm robot ###
+### Kinematics of the PR2 gripper, scaled by size x2 ###
 Tparent     1 0 0 0 1 0 0 0 1 0 0 0   1 0 0 0 1 0 0 0 1 0.092 0.020 0      1 0 0 0 0 1 0 -1 0 0.18 0.0 0    1 0 0 0 1 0 0 0 1 0.092 -0.020 0      1 0 0 0 0 -1 0 1 0 0.18 0.0 0
 axis       0 0 1      0 0 1     0 1 0      0 0 1     0 1 0
 parents     -1   0      1    0     3
@@ -6,7 +6,7 @@ qMinDeg    0      2.75  2.75     -62.75    2.75
 qMaxDeg    0      62.75 62.75  -2.75   62.75
 velMaxDeg  0      90    90      90    90
 qDeg 0 2.75 2.75 -2.75 2.75
-geometry   "data/pr2/wrist.tri" "data/pr2/finger_left.tri" "data/pr2/finger_tip.tri"  "data/pr2/finger_right.tri"  "data/pr2/finger_tip.tri"
+geometry   "pr2/wrist.tri" "pr2/finger_left.tri" "pr2/finger_tip.tri"  "pr2/finger_right.tri"  "pr2/finger_tip.tri"
 geomscale 0.02 0.02 0.02 0.02 0.02
 mass       0.5  0.3   0.1   0.3   0.1
 automass

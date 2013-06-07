@@ -17,7 +17,7 @@ velMaxDeg  0    400    400      430    540    475    760
 #accMaxDeg  0    800    800      800    800     800    800
 #velMaxDeg  0    200    200      215    270    235    380
 accMaxDeg  0    400    400      400    400     400    400
-geometry   "data/tx90l/part6.tri" "data/tx90l/part5.tri" "data/tx90l/part4.tri" "data/tx90l/part3.tri" "data/tx90l/part2.tri" "data/tx90l/part1.tri" "data/objects/sphere.tri"
+geometry   "tx90l/part6.tri" "tx90l/part5.tri" "tx90l/part4.tri" "tx90l/part3.tri" "tx90l/part2.tri" "tx90l/part1.tri" "../objects/sphere.tri"
 geomscale 1 1 1 1 1 1 0.03
 mass       20 10 10 5 5 1 0.1
 automass
@@ -35,7 +35,7 @@ dryFriction 20 20 10 2.5 0.5 0.1
 #dryFriction 0.5 0.5 0.5 0.1 0.1 0.1
 
 
-mount -1 "data/tx90ball.rob"  -1 0 0 0 -1 0 0 0 1    0.7 0 0
+mount -1 "tx90ball.rob"  -1 0 0 0 -1 0 0 0 1    0.7 0 0
 
 noselfcollision 0 2
 noselfcollision 0 3
