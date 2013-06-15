@@ -1,7 +1,7 @@
 from robotsim import *
 from contact import ContactPoint
-from geometry import so3
-from geometry import vectorops
+import so3
+import vectorops
 
 def writeVector(q):
     """Writes a vector to text 'n v1 ... vn'"""
