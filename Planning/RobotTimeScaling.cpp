@@ -17,6 +17,8 @@
 //f-tolerances are set to a scaling of the x-tolerances by this amount
 const static Real gConstraintToleranceScale = 1e-3;
 
+//time scaling grids are set to the spline resolution + this many bisections
+const static int gNumTimescaleBisectIters = 2;
 
 bool CheckBounds(Robot& robot,const TimeScaledBezierCurve& traj,const vector<Real>& times)
 {
@@ -564,9 +566,8 @@ bool GenerateAndTimeOptimizeMultiPath(Robot& robot,MultiPath& multipath,Real xto
       paths[i].segments[j].space = &cspace;
       paths[i].segments[j].manifold = &manifold;
     }
-    paths[i].Bisect();
-    paths[i].Bisect();
-    paths[i].Bisect();
+    for(int iters=0;iters<gNumTimescaleBisectIters;iters++)
+      paths[i].Bisect();
 
     traj.path.Concat(paths[i]);
     for(size_t j=0;j<paths[i].segments.size();j++)
