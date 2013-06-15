@@ -10,8 +10,13 @@
 #include <fstream>
 
 #define DO_CHECK_BOUNDS 0
-#define DO_SAVE_LIMITS 0
+#define DO_SAVE_LIMITS 1
+#define DO_SAVE_PLOT 1
 #define DO_TEST_TRIANGULAR 1
+
+//f-tolerances are set to a scaling of the x-tolerances by this amount
+const static Real gConstraintToleranceScale = 1e-3;
+
 
 bool CheckBounds(Robot& robot,const TimeScaledBezierCurve& traj,const vector<Real>& times)
 {
@@ -82,7 +87,7 @@ void SaveLimits(Robot& robot,const TimeScaledBezierCurve& traj,Real dt,const cha
     out<<",v["<<robot.linkNames[i]<<"]";
   for(size_t i=0;i<robot.links.size();i++)
     out<<",a["<<robot.linkNames[i]<<"]";
-  out<<",activeLimit,saturation";
+  out<<",activeVLimit,activeAlimit,vsaturation,asaturation";
   out<<endl;
 
   Vector q,v,a,maxv,maxa;
@@ -99,25 +104,21 @@ void SaveLimits(Robot& robot,const TimeScaledBezierCurve& traj,Real dt,const cha
       out<<","<<v(j);
     for(int j=0;j<a.n;j++)
       out<<","<<a(j);
-    Real maxSat=0;
-    int maxSatInd=0;
-    bool maxSatA=false;
+    Real maxVSat=0,maxASat=0;
+    int maxVSatInd=0,maxASatInd=0;
     for(int j=0;j<v.n;j++)
-      if(Abs(v(j))/robot.velMax(j) > maxSat) {
-	maxSat = Abs(v(j))/robot.velMax(j);
-	maxSatInd = j;
+      if(Abs(v(j))/robot.velMax(j) > maxVSat) {
+	maxVSat = Abs(v(j))/robot.velMax(j);
+	maxVSatInd = j;
       }
     for(int j=0;j<a.n;j++)
-      if(Abs(a(j))/robot.accMax(j) > maxSat) {
-	maxSat = Abs(a(j))/robot.accMax(j);
-	maxSatInd = j;
-	maxSatA=true;
+      if(Abs(a(j))/robot.accMax(j) > maxASat) {
+	maxASat = Abs(a(j))/robot.accMax(j);
+	maxASatInd = j;
       }
-    if(maxSatA)
-      out<<",a["<<robot.linkNames[maxSatInd]<<"]";
-    else
-      out<<",v["<<robot.linkNames[maxSatInd]<<"]";
-    out<<","<<maxSat<<endl;
+    out<<","<<robot.linkNames[maxVSatInd];
+    out<<","<<robot.linkNames[maxASatInd];
+    out<<","<<maxVSat<<","<<maxASat<<endl;
   }
   out<<endl;
   for(size_t i=0;i<traj.timeScaling.times.size();i++) {
@@ -221,7 +222,7 @@ bool TimeOptimizePath(Robot& robot,const vector<Real>& oldtimes,const vector<Con
 bool InterpolateConstrainedPath(Robot& robot,const Config& a,const Config& b,const vector<IKGoal>& ikGoals,vector<Config>& milestones,Real xtol)
 {
   RobotConstrainedInterpolator interp(robot,ikGoals);
-  interp.ftol = xtol*1e-2;
+  interp.ftol = xtol*gConstraintToleranceScale;
   interp.xtol = xtol;
   if(!interp.Make(a,b,milestones)) return false;
   return true;
@@ -237,7 +238,7 @@ bool InterpolateConstrainedPath(Robot& robot,const Config& a,const Config& b,con
   f.activeDofs.InvMap(b,activeB);
   
   ConstrainedInterpolator interp(&space,&f);
-  interp.ftol = xtol*1e-2;
+  interp.ftol = xtol*gConstraintToleranceScale;
   interp.xtol = xtol;
   if(!interp.Make(activeA,activeB,milestones)) {
     return false;
@@ -258,7 +259,7 @@ bool InterpolateConstrainedPath(Robot& robot,const Config& a,const Config& b,con
 bool InterpolateConstrainedPath(Robot& robot,const vector<Config>& milestones,const vector<IKGoal>& ikGoals,vector<Config>& path,Real xtol)
 {
   RobotSmoothConstrainedInterpolator interp(robot,ikGoals);
-  interp.ftol = xtol*1e-2;
+  interp.ftol = xtol*gConstraintToleranceScale;
   interp.xtol = xtol;
   GeneralizedCubicBezierSpline spline;
   if(!MultiSmoothInterpolate(interp,milestones,spline)) return false;
@@ -320,8 +321,8 @@ bool InterpolateConstrainedMultiPath(Robot& robot,const MultiPath& path,vector<G
       for(size_t i=0;i<path.sections.size();i++) {
 	/** TEMP */
 	if(path.sections[i].times.empty()) {
-	  //MonotonicInterpolate(path.sections[i].milestones,paths[i].segments,
-	  SplineInterpolate(path.sections[i].milestones,paths[i].segments,
+	  MonotonicInterpolate(path.sections[i].milestones,paths[i].segments,
+	  //SplineInterpolate(path.sections[i].milestones,paths[i].segments,
 			       &space,&manifold);
 	  //uniform timing
 	  paths[i].durations.resize(paths[i].segments.size());
@@ -330,8 +331,8 @@ bool InterpolateConstrainedMultiPath(Robot& robot,const MultiPath& path,vector<G
 	    paths[i].durations[j] = dt;
 	}
 	else {
-	  //MonotonicInterpolate(path.sections[i].milestones,path.sections[i].times,paths[i].segments,
-	  SplineInterpolate(path.sections[i].milestones,path.sections[i].times,paths[i].segments,
+	  MonotonicInterpolate(path.sections[i].milestones,path.sections[i].times,paths[i].segments,
+	  //SplineInterpolate(path.sections[i].milestones,path.sections[i].times,paths[i].segments,
 			       &space,&manifold);
 	  //get timing from path
 	  paths[i].durations.resize(paths[i].segments.size());
@@ -426,6 +427,8 @@ bool InterpolateConstrainedMultiPath(Robot& robot,const MultiPath& path,vector<G
     if(i<transitionDerivs.size()) 
       dxnext.setRef(transitionDerivs[i]); 
     if(!MultiSmoothInterpolate(interp,path.sections[i].milestones,dxprev,dxnext,paths[i])) {
+    /** TEMP - test no inter-section smoothing**/
+    //if(!MultiSmoothInterpolate(interp,path.sections[i].milestones,paths[i])) {
       fprintf(stderr,"Unable to interpolate section %d\n",i);
       return false;
     }
@@ -461,13 +464,14 @@ bool DiscretizeConstrainedMultiPath(Robot& robot,const MultiPath& path,MultiPath
     out.settings["resolution"]=ss.str();
     out.settings["program"]="DiscretizeConstrainedMultiPath";
   }
-  Real tofs = 0;
+  Real tofs = (path.HasTiming() ? path.sections[0].times.front() : 0);
   for(size_t i=0;i<out.sections.size();i++) {
     out.sections[i].velocities.resize(0);
     paths[i].GetPiecewiseLinear(out.sections[i].times,out.sections[i].milestones);
     //shift section timing
+    Real tscale = (path.HasTiming() ? path.sections[i].times.back()-path.sections[i].times.front() : 1.0) / out.sections[i].times.back();
     for(size_t j=0;j<out.sections[i].times.size();j++)
-      out.sections[i].times[j] += tofs;
+      out.sections[i].times[j] = tofs + out.sections[i].times[j]*tscale;
     tofs = out.sections[i].times.back();
   }
   return true;
@@ -560,6 +564,10 @@ bool GenerateAndTimeOptimizeMultiPath(Robot& robot,MultiPath& multipath,Real xto
       paths[i].segments[j].space = &cspace;
       paths[i].segments[j].manifold = &manifold;
     }
+    paths[i].Bisect();
+    paths[i].Bisect();
+    paths[i].Bisect();
+
     traj.path.Concat(paths[i]);
     for(size_t j=0;j<paths[i].segments.size();j++)
       edgeToSection.push_back((int)i);
@@ -633,6 +641,11 @@ bool GenerateAndTimeOptimizeMultiPath(Robot& robot,MultiPath& multipath,Real xto
 #if DO_CHECK_BOUNDS  
   CheckBounds(robot,traj,dt);
 #endif // DO_CHECK_BOUNDS
+
+#if DO_SAVE_PLOT
+  printf("Saving plot to opt_multipath.csv\n");
+  traj.Plot("opt_multipath.csv",robot.velMin,robot.velMax,-1.0*robot.accMax,robot.accMax);
+#endif //DO_SAVE_PLOT
 
 #if DO_SAVE_LIMITS
   SaveLimits(robot,traj,dt,"opt_multipath_limits.csv");
