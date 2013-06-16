@@ -716,12 +716,12 @@ bool Robot::LoadRob(const char* fn) {
 		FatalError("Scale not done yet");
 	if (geomscale.size() == 1)
 		geomscale.resize(n, geomscale[0]);
-	string fnPath = GetFilePath(fn);
+	string path = GetFilePath(fn);
 	for (size_t i = 0; i < geomFn.size(); i++) {
 		if (geomFn[i].empty()) {
 			continue;
 		}
-		geomFn[i] = fnPath+geomFn[i];
+		geomFn[i] = path + geomFn[i];
 		if (!LoadGeometry(i, geomFn[i].c_str())) {
 		  fprintf(stderr, "Unable to load link %d geometry file %s\n", i,
 			  geomFn[i].c_str());
@@ -910,8 +910,8 @@ bool Robot::LoadRob(const char* fn) {
 		return false;
 
 	for (size_t i = 0; i < mountLinks.size(); i++) {
-	  mountFiles[i] = fnPath + mountFiles[i];
 		printf("Mounting file %s\n", mountFiles[i].c_str());
+		mountFiles[i] = path + mountFiles[i];
 		if (Meshing::CanLoadTriMeshExt(FileExtension(mountFiles[i].c_str()))) {
 			//mount a triangle mesh on top of another triangle mesh
 			Meshing::TriMesh mesh;
@@ -1016,12 +1016,12 @@ void Robot::InitStandardJoints() {
 	}
 }
 
-bool Robot::SaveGeometry(const char* geomPath) {
+bool Robot::SaveGeometry(const char* geomPath,const char* geomExt) {
 	vector<string> geomFiles;
 	geomFiles.resize(links.size());
 	for (size_t i = 0; i < links.size(); i++) {
 		stringstream ss;
-		ss << geomPath << linkNames[i] << ".tri";
+		ss << geomPath << linkNames[i] << "." << geomExt;
 		geomFiles[i] = ss.str();
 	}
 	return SaveGeometry(geomFiles);
@@ -1042,12 +1042,12 @@ bool Robot::SaveGeometry(const vector<string>& geomFiles) {
 	return true;
 }
 
-bool Robot::Save(const char* fn, const char* geomPath) {
+bool Robot::Save(const char* fn, const char* geomPath,const char* geomExt) {
 	vector<string> geomFiles;
 	geomFiles.resize(links.size());
 	for (size_t i = 0; i < links.size(); i++) {
 		stringstream ss;
-		ss << geomPath << linkNames[i] << ".tri";
+		ss << geomPath << linkNames[i] << "." << geomExt;
 		geomFiles[i] = ss.str();
 	}
 	return Save(fn, geomFiles);
@@ -1235,36 +1235,6 @@ bool Robot::Save(const char* fn, const vector<string>& geomFiles) {
 	return true;
 }
 
-bool Robot::Save(const char* fn,const vector<string>& geomFiles, const vector<int>& geomTransformIndex, const vector<Matrix4>& geomTransform){
-	bool res = Save(fn, geomFiles);
-	if(!res)
-		return false;
-	ofstream file;
-	if(geomTransformIndex.size() != geomTransform.size()){
-		printf("geomTransformIndex size not match geomTransform!");
-		return false;
-	}
-	file.open(fn, ios::app);
-	if (!file.is_open()) {
-		cerr << fn << " cannot be opened!" << endl;
-		file.close();
-		return false;
-	}
-	file << endl;
-	for (int i = 0; i < geomTransformIndex.size(); i++) {
-		file << "geomTransform\t"<<geomTransformIndex[i]<<"\t";
-
-		Matrix4 m(geomTransform[i]);
-		file << m(0,0) << " " << m(0,1) << " " << m(0,2) << " " << m(0,3)<<"\t";
-		file << m(1,0) << " " << m(1,1) << " " << m(1,2) << " " << m(1,3)<<"\t";
-		file << m(2,0) << " " << m(2,1) << " " << m(2,2) << " " << m(2,3)<<"\t";
-		file << m(3,0) << " " << m(3,1) << " " << m(3,2) << " " << m(3,3)<<endl;
-	}
-	file <<endl;
-	file.close();
-
-	return true;
-}
 
 bool Robot::CheckValid() const {
 	for (size_t i = 0; i < parents.size(); i++)
@@ -1989,7 +1959,7 @@ void Robot::GetDriverJacobian(int d, Vector& J) {
 	}
 }
 
-bool Robot::LoadURDF(const char* fn) {
+bool Robot::LoadURDF(const char* fn){
 	string s(fn);
 	//Get content from the Willow Garage parser
 	boost::shared_ptr<urdf::ModelInterface> parser = urdf::parseURDF(s);
@@ -2221,23 +2191,6 @@ bool Robot::LoadURDF(const char* fn) {
 //	}
 
 	this->UpdateConfig(q);
-
-	vector<string> geomfile;
-	geomfile.resize(this->links.size());
-	for (int i = 5; i < links.size(); i++) {
-		int linknode_index = i - 5;
-		geomfile[i] = linkNodes[linknode_index].geomName;
-	}
-
-	vector<Matrix4> geomTransform;
-	vector<int> geomTransformIndex;
-	for(int i = 5; i < links.size(); i++){
-		int linknode_index =  i-5;
-		if( !linkNodes[linknode_index].geomScale.isIdentity() ){
-			geomTransformIndex.push_back(i);
-			geomTransform.push_back(linkNodes[linknode_index].geomScale);
-		}
-	}
 
 	printf("Done loading robot file.\n");
 	return true;

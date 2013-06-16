@@ -8,12 +8,15 @@ import math
 import vectorops
 
 def __str__(R):
+    """Converts a rotation to a string."""
     return '\n'.join([' '.join([str(ri) for ri in r]) for r in matrix(R)])
 
 def identity():
+    """Returns the identity rotation"""
     return [1.,0.,0.,0.,1.,0.,0.,0.,1.]
 
 def inv(R):
+    """Inverts the rotation"""
     Rinv = [R[0],R[3],R[6],R[1],R[4],R[7],R[2],R[5],R[8]]
     return Rinv
 
@@ -35,6 +38,7 @@ def from_matrix(mat):
     return R
 
 def mul(R1,R2):
+    """Multiplies two rotations."""
     m1=matrix(R1)
     m2T=matrix(inv(R2))
     mres = matrix(identity())
@@ -51,6 +55,7 @@ def mul(R1,R2):
     return R
 
 def trace(R):
+    """Computes the trace of the rotation matrix."""
     return R[0]+R[4]+R[8]
 
 def angle(R):
@@ -118,6 +123,8 @@ def axis_angle(R):
     return (vectorops.unit(m),vectorops.norm(m))
 
 def from_axis_angle(aa):
+    """Converts an axis-angle representation (axis,angle) to a 3D rotation
+    matrix."""
     return rotation(aa[0],aa[1])
     
 def distance(R1,R2):
@@ -127,6 +134,8 @@ def distance(R1,R2):
     return angle(R)
 
 def error(R1,R2):
+    """Returns a 3D "difference vector" that describes how far R1 is from R2.
+    More precisely, this is the Lie derivative."""
     R = mul(R1,inv(R2))
     return moment(R)
 

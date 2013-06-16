@@ -1517,6 +1517,7 @@ int main(int argc, char** argv)
     if(!in) printf("Could not open config file %s\n",configs[i].c_str());
     Vector temp;
     in >> temp;
+    if(!in) printf("Error reading config file %s\n",configs[i].c_str());
     if(temp.n != (int)world.robots[i].robot->links.size()) {
       printf("Incorrect number of DOFs in config %d\n",i);
       continue;

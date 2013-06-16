@@ -5,7 +5,7 @@
 #include "TriangleSampler.h"
 using Geometry::PointRay2D;
 
-/** @ingroup Geometry
+/** @ingroup Contact
  * @brief Samples points in a convex polygon. 
  *
  * Allows unbounded rays, which are capped at some distance and the

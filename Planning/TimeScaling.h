@@ -96,6 +96,9 @@ public:
   void Deriv(Real t,Vector& dx) const;
   void Accel(Real t,Vector& ddx) const;
 
+  //plots time-scaling constraints at resolution res
+  void Plot(const char* fn,const Vector& vmin,const Vector& vmax,const Vector& amin,const Vector& amax,Real res=1e-3);
+
   GeneralizedCubicBezierSpline path;
   Spline::TimeSegmentation pathSegments;  //optionally set to the partial sums of path.durations
   TimeScaling timeScaling;

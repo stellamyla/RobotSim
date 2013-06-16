@@ -5,6 +5,8 @@
 #include <robotics/RobotWithGeometry.h>
 #include "Stance.h"
 
+/** @addtogroup Contact */
+/** @{ */
 
 /** @brief Produces a list of contacts as though the robot were standing on a plane.
  * 
@@ -52,5 +54,6 @@ void ClusterContacts(vector<ContactPoint>& cps,int numClusters,Real clusterNorma
  */
 int ClosestContact(const ContactPoint& p,const Meshing::TriMesh& mesh,ContactPoint& closest,Real normalScale=0.1);
 
+/** @} */
 
 #endif

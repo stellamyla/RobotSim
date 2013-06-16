@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Math3D;
 
-/** @ingroup Geometry
+/** @ingroup Contact
  * @brief Samples points in a list of 2d triangles.
  *
  * Call InitAreas() before sampling.
@@ -29,7 +29,7 @@ struct Triangle2DSampler
   std::vector<Real> sumAreas;
 };
 
-/** @ingroup Geometry
+/** @ingroup Contact
  * @brief Samples points in a list of 3d triangles. 
  *
  * Call InitAreas() before sampling.

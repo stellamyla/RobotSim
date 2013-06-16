@@ -58,6 +58,7 @@ bool MilestonePathController::SendCommand(const string& name,const string& str)
   if(name == "set_tq") {
     ss>>t>>q;
     if(!ss) return false;
+    printf("set_tq: does this work?\n");
     SetMilestone(q,t);
     return true;
   }
@@ -72,7 +73,7 @@ bool MilestonePathController::SendCommand(const string& name,const string& str)
     }
     Vector xback = Endpoint();
     path.ramps.resize(path.ramps.size()+1);
-    path.ramps.back().SetLinear(xback,q,t);
+    path.ramps.back().SetLinear(xback,q,t-path.GetTotalTime());
     return true;
   }
   else if(name == "set_q") {
@@ -607,8 +608,14 @@ bool PolynomialPathController::SendCommand(const string& name,const string& str)
   if(name == "set_tq") {
     ss>>t>>q;
     if(!ss) return false;
+    if(t < pathOffset) {
+      fprintf(stderr,"set_tq: warning, cut time %g is less than path's endtime %g\n",t,pathOffset);
+      return false;
+    }
     Cut(0);
-    AppendLinear(q,t);
+    printf("set_tq: Back trimmed to time %g, path parameter %g\n",path.EndTime(),pathOffset);
+    Assert(t >= path.EndTime());
+    AppendLinear(q,t-path.EndTime());
     return true;
   }
   else if(name == "append_tq") {

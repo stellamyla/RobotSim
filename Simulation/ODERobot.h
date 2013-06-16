@@ -9,7 +9,8 @@
 using namespace Math;
 using namespace std;
 
-/** @brief A robot simulated in an ODE "world"
+/** @ingroup Simulation
+ * @brief A robot simulated in an ODE "world"
  *
  * Collision detection
  * geom is a list of ODETriMesh objects.  The ODE "geom" of geom[i] contains
@@ -55,9 +56,6 @@ class ODERobot
   void GetLinkVelocity(int link,Vector3& w,Vector3& v) const;
   bool ReadState(File& f);
   bool WriteState(File& f) const;
-
-  //wierd thing needed for collision detection
-  void UpdateLastTransforms();
 
   inline dSpaceID space() const { return spaceID; }
   inline dBodyID body(int link) const { return bodyID[link]; }

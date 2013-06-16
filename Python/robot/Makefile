@@ -2,10 +2,12 @@
 
 default: lib
 
-docs: 
+cpp-docs: 
+	cd src; doxygen doxygen.conf
+	cd src; ./doxy2swig.py docs/xml/index.xml docs/docs.i
+
+docs:
 	doxygen doxygen.conf
-	./doxy2swig.py docs/xml/index.xml docs/docs.i
-	pydoc -w robotsim
 
 swig:
 	swig -python -c++ src/robotsim.i

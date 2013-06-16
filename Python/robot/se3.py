@@ -9,9 +9,11 @@ import vectorops
 import so3
 
 def identity():
+    """Returns the identity transformation."""
     return ([1.,0.,0.,0.,1.,0.,0.,0.,1.],[0.,0.,0.])
 
 def inv(T):
+    """Returns the inverse of the transformation."""
     (R,t) = T
     Rinv = so3.inv(R)
     tinv = [-Rinv[0]*t[0]-Rinv[3]*t[1]-Rinv[6]*t[2],
@@ -53,6 +55,7 @@ def from_homogeneous(mat):
     return (R,t)
 
 def mul(T1,T2):
+    """Composes two transformations."""
     (R1,t1) = T1
     (R2,t2) = T2
     R = so3.mul(R1,R2)
@@ -60,11 +63,16 @@ def mul(T1,T2):
     return (R,t)
 
 def distance(T1,T2,Rweight=1.0,tweight=1.0):
+    """Returns a distance metric between the two transformations. The
+    rotation distance is weighted by Rweight and the translation distance
+    is weighted by tweight"""
     (R1,t1)=T1
     (R2,t2)=T2
     return rweight*so3.distance(R1,R2) + tweight*vectorops.distance(t1,t2)
 
 def error(T1,T2):
+    """Returns a 6D "difference vector" that describes how far T1 is from T2.
+    More precisely, this is the Lie derivative (w,v)."""
     (R1,t1)=T1
     (R2,t2)=T2
     #concatenate lists

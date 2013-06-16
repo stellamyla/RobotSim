@@ -50,7 +50,7 @@ public:
   RobotMotorCommand* command;  ///<motor command output (output to simulator)
 };
 
-/** @ingroup Simulation
+/** @ingroup Control
  * @brief A class to simplify the loading of different controllers at run time.
  *
  * First a list of controllers is provided to Register(), or RegisterDefault()

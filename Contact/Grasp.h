@@ -8,6 +8,10 @@
 #include <vector>
 class TiXmlElement;
 
+/** @ingroup Contact
+ * @brief Slightly more sophisticated than a Stance, a Grasp allows
+ * some of the robot's degrees of freedom to be fixed.
+ */
 class Grasp
 {
  public:

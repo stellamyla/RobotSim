@@ -1,4 +1,4 @@
-%module rootfind
+%module rootfind(docstring="Python interface to KrisLibrary nonlinear, multidimensional root finding routines")
 %{
 	#include <exception>
 	#include "pyerr.h"

@@ -1,3 +1,5 @@
+"""OpenGL drawing functions for geometric primitives."""
+
 import math
 import vectorops
 from OpenGL.GL import *

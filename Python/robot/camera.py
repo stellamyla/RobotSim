@@ -1,3 +1,6 @@
+"""This module defines a basic set of 3D cameras that can be controlled
+by a GUI."""
+
 import so3
 import se3
 import vectorops

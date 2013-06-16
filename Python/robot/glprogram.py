@@ -1,3 +1,11 @@
+"""This module defines convenient classes for building 3D GUI programs
+over OpenGL (GLUT).
+- GLProgram takes care of basic user input.
+- GLNavigationProgram allows 3D navigation with the mouse.
+- GLRealtimeProgram calls a subclass-defined idle() function roughly on a
+  constant time step.
+"""
+
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *

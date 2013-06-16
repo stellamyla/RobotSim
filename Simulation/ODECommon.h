@@ -4,8 +4,6 @@
 #include <math3d/primitives.h>
 using namespace Math3D;
 
-#define ODE_0_8 1
-
 inline void CopyVector(dVector4 x,const Vector3& v)
 {
   x[0] = v.x;

@@ -1,4 +1,4 @@
-%module(docstring="Loading and simulating robot files") robotsim
+%module(docstring="Loading, modeling, and simulating RobotSim files") robotsim
 %{
 	#include <exception>
 	#include <vector>

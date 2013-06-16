@@ -40,12 +40,12 @@ if on_cygwin:
     kllibs.append('glut32')
 
 #needed for RobotSim to link
-libs = ['RobotSim']+kllibs+['ode']
+#libs = ['RobotSim']+kllibs+['ode']
 #switch to this if assimp support is desired
-#libs = ['RobotSim']+kllibs+['ode','assimp']
+libs = ['RobotSim']+kllibs+['ode','assimp']
 
 setup(name='RobotSim',
-      version='1.0',
+      version='0.2',
       description='RobotSim extension module',
       author='Kris Hauser',
       author_email='hauserk@indiana.edu',

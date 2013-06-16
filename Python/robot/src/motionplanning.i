@@ -1,4 +1,4 @@
-%module motionplanning
+%module(docstring="Python interface to KrisLibrary motion planing routines") motionplanning
 %{
 	#include <exception>
 	#include "pyerr.h"

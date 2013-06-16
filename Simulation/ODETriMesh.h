@@ -8,6 +8,9 @@
 #include <ode/collision_trimesh.h>
 using namespace Math3D;
 
+/** @ingroup Simulation
+ * @brief An ODE triangle mesh.
+ */
 class ODETriMesh
 {
  public:
@@ -17,8 +20,6 @@ class ODETriMesh
   void Create(const Meshing::TriMesh& mesh,dSpaceID space,Vector3 offset=Vector3(0.0));
   void Clear();
   void DrawGL();
-  void SetLastTransform(const Matrix4& mat);
-  void GetLastTransform(Matrix4& mat);
   void SetPadding(Real outerMargin);
   Real GetPadding();
 
@@ -37,7 +38,6 @@ class ODETriMesh
   int numTris;
   int numVertComponents;
 
-  dReal lastTransform[16];
   Geometry::CollisionMesh* collisionMesh;
   ODESurfaceProperties surface;
 };

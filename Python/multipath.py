@@ -235,6 +235,7 @@ if __name__ == '__main__':
     parser.add_option("--duration", action="store_true",dest="duration",default=False, help="Print duration")
     parser.add_option("--concat", dest="concat",metavar="FILE", help="Concatenate multiple files, output to FILE")
     parser.add_option("--timescale", dest="timescale",default=None, help="Scale timing")
+    parser.add_option("--timeshift", dest="timeshift",default=None, help="Shift timing")
     (options,args) = parser.parse_args()
     
     if len(args) < 1:
@@ -245,8 +246,9 @@ if __name__ == '__main__':
     paths = [MultiPath() for arg in args]
     for p,arg in zip(paths,args):
         p.load(arg)
-    if options.timescale:
-        scale = float(options.timescale)
+    scale = float(options.timescale) if options.timescale else 1
+    ofs = float(options.timeshift) if options.timeshift else 0
+    if scale != 1 or ofs != 0:
         rev = (scale < 0)
         if rev:
             scale = -scale;
@@ -256,7 +258,7 @@ if __name__ == '__main__':
                     continue
                 et = p.endTime()
                 for s in p.sections:
-                    s.times = [scale*(et-t) for t in s.times]
+                    s.times = [ofs+scale*(et-t) for t in s.times]
                     s.times.reverse()
                     s.configs.reverse()
                     if s.velocities:
@@ -268,7 +270,7 @@ if __name__ == '__main__':
                     print "Path does not have timing"
                     continue
                 for s in p.sections:
-                    s.times = [scale*t for t in s.times]
+                    s.times = [ofs+scale*t for t in s.times]
         if not options.concat:
             print "Warning: time scaling not saved, --concat needs to be specified"
     if options.concat:

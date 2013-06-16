@@ -17,7 +17,10 @@
 using namespace Math3D;
 using namespace Optimization;
 
+//1 if the time scaling should use interval analysis to get the derivative
+//bounds, otherwise it will just use the endpoint derivatives
 #define INTERVAL_DERIV_BOUNDS 1
+#define DEBUG_INTERVAL_DERIV_BOUNDS 0
 
 const static Real vWarningThreshold = 100, aWarningThreshold = 1000;
 
@@ -1016,7 +1019,7 @@ Real TimeScaling::ParamToTime(int segment,Real s) const
   //solve for u in 
   //s=params[segment]+b*u+a*Sqr(u);
   //t = u+times[segment]
-  Real a = 0.25*(Sqr(ds[segment+1])-Sqr(ds[segment]));
+  Real a = 0.25*(Sqr(ds[segment+1])-Sqr(ds[segment]))/(params[segment+1]-params[segment]);
   Real b = ds[segment];
   Real c = params[segment]-s;
   Real u1,u2;
@@ -2093,6 +2096,44 @@ bool OptimizeTimeScaling(const GeneralizedCubicBezierSpline& path,
     //vs[i] = 3.0*(path.segments[i].x1-path.segments[i].x0);
 #if INTERVAL_DERIV_BOUNDS
     path.segments[i].GetDerivBounds(vmins[i],vmaxs[i],amins[i],amaxs[i]);
+
+  #if DEBUG_INTERVAL_DERIV_BOUNDS
+    Vector temp1,temp2,temp3;
+    path.segments[i].Deriv(0,temp1);
+    path.segments[i].Deriv(1,temp2);
+    path.segments[i].Deriv(0.5,temp3);
+    for(int j=0;j<temp1.n;j++) {
+      if(temp1(j) < vmins[i](j)-Epsilon)
+	printf("OptimizeTimeScaling: Error, deriv bound %d %d incorrect @ start, %g < %g\n",i,j,temp1(j),vmins[i](j));
+      if(temp1(j) > vmaxs[i](j)+Epsilon)
+	printf("OptimizeTimeScaling: Error, deriv bound %d %d incorrect @ start, %g > %g\n",i,j,temp1(j),vmaxs[i](j));
+      if(temp2(j) < vmins[i](j)-Epsilon)
+	printf("OptimizeTimeScaling: Error, deriv bound %d %d incorrect @ end, %g < %g\n",i,j,temp2(j),vmins[i](j));
+      if(temp2(j) > vmaxs[i](j)+Epsilon)
+	printf("OptimizeTimeScaling: Error, deriv bound %d %d incorrect @ end, %g > %g\n",i,j,temp2(j),vmaxs[i](j));
+      if(temp3(j) < vmins[i](j)-Epsilon)
+	printf("OptimizeTimeScaling: Error, deriv bound %d %d incorrect @ mid, %g < %g\n",i,j,temp3(j),vmins[i](j));
+      if(temp3(j) > vmaxs[i](j)+Epsilon)
+	printf("OptimizeTimeScaling: Error, deriv bound %d %d incorrect @ mid, %g > %g\n",i,j,temp3(j),vmaxs[i](j));
+      if((Max(temp1(j),temp2(j),temp3(j))-Min(temp1(j),temp2(j),temp3(j)))*2.0 < (vmaxs[i](j) - vmins[i](j)))
+	printf("OptimizeTimeScaling: Warning, deriv bound %d %d is loose, [%g,%g] vs %g->%g->%g\n",i,j,vmins[i](j),vmaxs[i](j),temp1(j),temp3(j),temp2(j));
+    }
+    path.segments[i].Accel(0,temp1);
+    path.segments[i].Accel(1,temp2);
+    for(int j=0;j<temp1.n;j++) {
+      if(temp1(j) < amins[i](j)-Epsilon)
+	printf("OptimizeTimeScaling: Error, accel bound %d %d incorrect @ start, %g < %g\n",i,j,temp1(j),amins[i](j));
+      if(temp1(j) > amaxs[i](j)+Epsilon)
+	printf("OptimizeTimeScaling: Error, accel bound %d %d incorrect @ start, %g > %g\n",i,j,temp1(j),amaxs[i](j));
+      if(temp2(j) < amins[i](j)-Epsilon)
+	printf("OptimizeTimeScaling: Error, accel bound %d %d incorrect @ end, %g < %g\n",i,j,temp2(j),amins[i](j));
+      if(temp2(j) > amaxs[i](j)+Epsilon)
+	printf("OptimizeTimeScaling: Error, accel bound %d %d incorrect @ end, %g > %g\n",i,j,temp2(j),amaxs[i](j));
+      if(Abs(temp2(j) - temp1(j))*2.0 < (amaxs[i](j) - amins[i](j)))
+	printf("OptimizeTimeScaling: Warning, accel bound %d %d is loose, [%g,%g] vs [%g,%g]\n",i,j,amins[i](j),amaxs[i](j),temp1(j),temp2(j));
+    }
+  #endif // DEBUG_INTERVAL_DERIV_BOUNDS
+
 #else
     path.segments[i].Deriv(0,vmins[i]);
     path.segments[i].Deriv(1,vmaxs[i]);
@@ -2269,6 +2310,51 @@ void TimeScaledBezierCurve::Accel(Real t,Vector& ddx) const
   ddx.madd(dx,ddsdt2/path.durations[seg]);
 }
 
+void TimeScaledBezierCurve::Plot(const char* fn,const Vector& vmin,const Vector& vmax,const Vector& amin,const Vector& amax,Real res)
+{
+  ofstream out(fn,ios::out);
+  if(!out) {
+    fprintf(stderr,"TimeScaledBezierCurve::Plot(): Error opening %s\n",fn);
+    return;
+  }
+  out<<"s,t,ds,dds,dsmax,ddsmin(ds),ddsmax(ds)"<<endl;
+  Real s=0;
+  Real smax = path.TotalTime();
+  Vector dxds,ddxds;
+  while(s < smax) {
+    Real t=timeScaling.ParamToTime(s);
+    int seg=timeScaling.ParamToSegment(s);
+    Real ds = timeScaling.TimeToParamDeriv(seg,t);
+    Real dds = timeScaling.TimeToParamAccel(seg,t);
+    path.Deriv(s,dxds);
+    path.Accel(s,ddxds);
+    Assert(dxds.n == vmin.n && dxds.n == vmax.n);
+    Assert(dxds.n == amin.n && dxds.n == amax.n);
+    Real dsmax = Inf;
+    Real ddsmin = -Inf, ddsmax = Inf;
+    for(int i=0;i<dxds.n;i++) {
+      if(dxds(i)*dsmax > vmax(i))
+	dsmax = vmax(i)/dxds(i);
+      if(dxds(i)*dsmax < vmin(i))
+	dsmax = vmin(i)/dxds(i);
+      Real a = ddxds(i)*Sqr(ds);
+      if(dxds(i) > 0) {
+	if(a + ddsmin*dxds(i) < amin(i)) 
+	  ddsmin = (amin(i) - a) / dxds(i);
+	if(a + ddsmax*dxds(i) > amax(i)) 
+	  ddsmax = (amax(i) - a) / dxds(i);
+      }
+      else {
+	if(a + ddsmax*dxds(i) < amin(i)) 
+	  ddsmax = (amin(i) - a) / dxds(i);
+	if(a + ddsmin*dxds(i) > amax(i)) 
+	  ddsmin = (amax(i) - a) / dxds(i);
+      }
+    }
+    out<<s<<","<<t<<","<<ds<<","<<dds<<","<<dsmax<<","<<ddsmin<<","<<ddsmax<<endl;
+    s += res;
+  }
+}
 
 
 ContactTimeScaling::ContactTimeScaling(Robot& robot)

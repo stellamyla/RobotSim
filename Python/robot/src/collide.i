@@ -1,4 +1,4 @@
-%module collide
+%module(docstring="Python interface to KrisLibrary collision detection routines") collide
 %{
 	#include <exception>
 	#include "pyerr.h"

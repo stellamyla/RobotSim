@@ -10,7 +10,8 @@
 #include <ode/contact.h>
 #include <map>
 
-/** @brief An index that identifies some ODE object in the world.
+/** @ingroup Simulation
+ * @brief An index that identifies some ODE object in the world.
  * Environments, robots, robot bodies, or rigid objects are supported.
  */
 struct ODEObjectID
@@ -43,7 +44,8 @@ struct ODEObjectID
   int bodyIndex;  //for robots, this identifies a link
 };
 
-/** @brief A list of contacts between two objects, returned as feedback 
+/** @ingroup Simulation
+ * @brief A list of contacts between two objects, returned as feedback 
  * from the simulation.
  *
  * Note: are o1 and o2 actually used?
@@ -60,6 +62,9 @@ struct ODEContactList
 
 struct ODEContactResult;
 
+/** @ingroup Simulation
+ * @brief Global simulator settings.
+ */
 struct ODESimulatorSettings
 {
   ODESimulatorSettings();
@@ -84,7 +89,8 @@ struct ODESimulatorSettings
 
 
 
-/** @brief An interface to the ODE simulator.
+/** @ingroup Simulation
+ * @brief An interface to the ODE simulator.
  * 
  * Step() performs collision detection, calls StepDynamics(), and computes
  * collision feedback.

@@ -78,10 +78,9 @@ public:
   bool Load(const char* fn);
   bool LoadRob(const char* fn);
   bool LoadURDF( const char* fn);
-  bool Save(const char* fn,const char* geomPrefix="");  ///< Saves the geometry line as geomPrefix+[linkName].tri
+  bool Save(const char* fn,const char* geomPrefix="",const char* geomExt="tri");  ///< Saves the geometry line as geomPrefix+[linkName].[geomExt]
   bool Save(const char* fn,const vector<string>& geomFiles); 
-  bool Save(const char* fn,const vector<string>& geomFiles, const vector<int>& geomTransformIndex, const vector<Matrix4>& geomTransform);
-  bool SaveGeometry(const char* geomPrefix="");  ///< Saves the geometry files to geomPrefix+[linkName].tri
+  bool SaveGeometry(const char* geomPrefix="",const char* geomExt="tri");  ///< Saves the geometry files to geomPrefix+[linkName].[geomExt]
   bool SaveGeometry(const vector<string>& geomFiles); 
   void InitStandardJoints();
   bool CheckValid() const;

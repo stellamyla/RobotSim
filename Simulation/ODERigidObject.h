@@ -8,6 +8,9 @@
 #include <myfile.h>
 using namespace Math;
 
+/** @ingroup Simulation
+ * @brief An ODE-simulated rigid object
+ */
 class ODERigidObject
 {
  public:
@@ -25,9 +28,6 @@ class ODERigidObject
   bool ReadState(File& f);
   bool WriteState(File& f) const;
   
-  //wierd thing needed for collision detection
-  void UpdateLastTransform();
-
   dBodyID body() { return bodyID; }
   dGeomID geom() { return geometry->geom(); }
   dSpaceID space() { return spaceID; }

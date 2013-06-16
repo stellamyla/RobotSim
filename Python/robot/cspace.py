@@ -1,3 +1,6 @@
+"""This module provides convenient access to the motionplanning module
+    functionality by defining the CSpace and MotionPlan classes."""
+
 import motionplanning
 import random
 

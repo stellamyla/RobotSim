@@ -6,7 +6,15 @@
 #include "ControlledSimulator.h"
 #include <map>
 
-/** @brief Container for information about contacts regarding a certain
+/** @file Contact/WorldSimulation.h
+ * @ingroup Simulation
+ * @brief A physics simulation of a world.
+ */
+
+/** @addtogroup Simulation */
+/** @{ */
+
+/** @brief Container for information about contacts involving a certain
  * object.  Can be set to accumulate a summary over sub-steps or detailed
  * data per-step.
  *
@@ -133,5 +141,7 @@ class SpringHook : public WorldSimulationHook
   Vector3 localpt,target;
   Real k;
 };
+
+/** @} */
 
 #endif
