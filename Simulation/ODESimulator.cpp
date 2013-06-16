@@ -188,8 +188,6 @@ void ODESimulator::AddEnvironment(const Environment& env)
   envMeshes.resize(envMeshes.size()+1);
   envMeshes.back() = new ODETriMesh;
   envMeshes.back()->Create(env.mesh,envSpaceID);
-  Matrix4 I; I.setIdentity();
-  envMeshes.back()->SetLastTransform(I);
   envMeshes.back()->surf() = settings.defaultEnvSurface;
   envMeshes.back()->SetPadding(settings.defaultEnvPadding);
   if(!env.kFriction.empty())
@@ -245,14 +243,6 @@ void ODESimulator::Step(Real dt)
 
   //collisionTime = timer.ElapsedTime();
   //timer.Reset();
-
-  //weird thing for triangle meshes
-  for(size_t i=0;i<robots.size();i++) {
-    robots[i]->UpdateLastTransforms();
-  }
-  for(size_t i=0;i<objects.size();i++) {  
-    objects[i]->UpdateLastTransform();
-  }
 
   StepDynamics(dt);
 

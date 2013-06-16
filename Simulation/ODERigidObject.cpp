@@ -46,7 +46,6 @@ void ODERigidObject::Create(dWorldID worldID,dSpaceID space)
   geometry->surf().kDamping = obj.kDamping;
 
   SetTransform(obj.T);
-  UpdateLastTransform();
 }
 
 void ODERigidObject::Clear()
@@ -74,17 +73,6 @@ void ODERigidObject::GetTransform(RigidTransform& T) const
   T.t = comPos - T.R*obj.com;
 }
 
-void ODERigidObject::UpdateLastTransform()
-{
-  if(!bodyID || !geometry) return;
-  RigidTransform T;
-  const dReal* pos = dBodyGetPosition(bodyID);
-  const dReal* rot = dBodyGetRotation(bodyID);
-  CopyVector(T.t,pos);
-  CopyMatrix(T.R,rot);
-  Matrix4 mat(T);
-  geometry->SetLastTransform(mat);
-}
 
 void ODERigidObject::SetVelocity(const Vector3& w,const Vector3& v)
 {
@@ -100,7 +88,6 @@ void ODERigidObject::GetVelocity(Vector3& w,Vector3& v) const
 
 bool ODERigidObject::ReadState(File& f)
 {
-  RigidTransform Told;
   Vector3 w,v;
   dReal pos[3];
   dReal q[4];
@@ -108,38 +95,24 @@ bool ODERigidObject::ReadState(File& f)
   if(!ReadArrayFile(f,q,4)) return false;
   if(!ReadFile(f,w)) return false;
   if(!ReadFile(f,v)) return false;
-  if(!ReadFile(f,Told.R)) return false;
-  if(!ReadFile(f,Told.t)) return false;
 
   dBodySetPosition(bodyID,pos[0],pos[1],pos[2]);
   dBodySetQuaternion(bodyID,q);
   SetVelocity(w,v);
-  Matrix4 mat(Told);
-  geometry->SetLastTransform(mat);
   return true;
 }
 
 bool ODERigidObject::WriteState(File& f) const
 {
   //TODO: use body quaternion
-  RigidTransform Told;
   Vector3 w,v;
   const dReal* pos=dBodyGetPosition(bodyID);
   const dReal* q=dBodyGetQuaternion(bodyID);
   GetVelocity(w,v);
     
-  Matrix4 mat;
-  geometry->GetLastTransform(mat);
-  Assert(mat(3,0)==0);
-  Assert(mat(3,1)==0);
-  Assert(mat(3,2)==0);
-  Told.set(mat);
-
   if(!WriteArrayFile(f,pos,3)) return false;
   if(!WriteArrayFile(f,q,4)) return false;
   if(!WriteFile(f,w)) return false;
   if(!WriteFile(f,v)) return false;
-  if(!WriteFile(f,Told.R)) return false;
-  if(!WriteFile(f,Told.t)) return false;
   return true;
 }

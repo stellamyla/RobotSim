@@ -119,7 +119,7 @@ void ControlledRobotSimulator::GetActuatorTorques(Vector& t) const
 	  if(q - TwoPi <= robot->qMax(link) && q - TwoPi >= robot->qMin(link))
 	    q -= TwoPi;
 	}
-	if(q < robot->qMin(link) && q > robot->qMax(link)) {
+	if(q < robot->qMin(link) || q > robot->qMax(link)) {
 	  printf("Warning: joint angle %s out of bounds\n",robot->linkNames[link].c_str());
 	  printf("q=%g, qmin=%g, qmax=%g (deg)\n",RtoD(q),RtoD(robot->qMin(link)),RtoD(robot->qMax(link)));
 	  //getchar();

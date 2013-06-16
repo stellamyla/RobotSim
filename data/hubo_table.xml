@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <world>
-  <robot name="jaemiHubo" file="data/huboplus/huboplus_col.rob" config="63 0.04 0.0666416 0.0138791 0.022958 0.0126131 6.27273 0.0 0.0 -3.1182269945625705 1.6140877729705754 -0.5139315395391115 -2.1629940079932135 0.20272478366445723 -1.203251296900829 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 -0.43563 -0.331695 1.42685 -1.19807 -1.40899 -0.0395242 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"/>
-  <terrain file="data/terrains/plane.tri" />
+  <robot name="jaemiHubo" file="robots/huboplus/huboplus_col.rob" config="63 0.04 0.0666416 0.0038791 0.022958 0.0126131 6.27273 0 0 2.80158 2.69409 3.13842 -0.53582 0.362725 -0.10061 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.43563 -0.331695 1.42685 -1.19807 -1.40899 -0.0395242 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+  <terrain file="terrains/plane.tri" />
 
   <!-- the table -->
-  <terrain file="data/terrains/cube.tri" scale="0.05 0.05 0.8" translation="0.3 0.25 0.01">
+  <terrain file="terrains/cube.tri" scale="0.05 0.05 0.8" translation="0.3 0.25 0.01">
      <display color="0.4 0.3 0.2"/>
   </terrain>
-  <terrain file="data/terrains/cube.tri" scale="0.05 0.05 0.8" translation="0.3 -0.25 0.01">
+  <terrain file="terrains/cube.tri" scale="0.05 0.05 0.8" translation="0.3 -0.25 0.01">
      <display color="0.4 0.3 0.2"/>
   </terrain>
-  <terrain file="data/terrains/cube.tri" scale="0.05 0.05 0.8" translation="0.8 0.25 0.01">
+  <terrain file="terrains/cube.tri" scale="0.05 0.05 0.8" translation="0.8 0.25 0.01">
      <display color="0.4 0.3 0.2"/>
   </terrain>
-  <terrain file="data/terrains/cube.tri" scale="0.05 0.05 0.8" translation="0.8 -0.25 0.01">
+  <terrain file="terrains/cube.tri" scale="0.05 0.05 0.8" translation="0.8 -0.25 0.01">
      <display color="0.4 0.3 0.2"/>
   </terrain>
-  <terrain file="data/terrains/cube.tri" scale="0.6 0.6 0.02" translation="0.275 -0.275 0.81">
+  <terrain file="terrains/cube.tri" scale="0.6 0.6 0.02" translation="0.275 -0.275 0.81">
      <display color="0.4 0.3 0.2"/>
   </terrain>
 
 
-  <rigidObject name="bar" file="data/cylinder.obj" position="0.35 0.25 0.932" />
+  <rigidObject name="bar" file="objects/cylinder.obj" position="0.35 0.25 0.932" />
 
   <simulation>
     <globals maxContacts="20" />

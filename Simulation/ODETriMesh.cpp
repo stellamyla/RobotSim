@@ -172,43 +172,6 @@ void ODETriMesh::DrawGL()
   glEnd();
 }
 
-void ODETriMesh::SetLastTransform(const Matrix4& mat)
-{
-#if USING_CUSTOM_MESH
-  return;
-#endif
-
-  CopyMatrixCM(lastTransform,mat);
-#if ODE_0_8
-    //ode 0.8 code here
-    dGeomTriMeshSetLastTransform(geom(),lastTransform);
-#else
-    //ode 0.7 code here
-    dGeomTriMeshDataSet(triMeshData(),TRIMESH_LAST_TRANSFORMATION,lastTransform);
-#endif
-}
-
-void ODETriMesh::GetLastTransform(Matrix4& mat)
-{
-#if USING_CUSTOM_MESH
-  mat.setIdentity();
-  return;
-#endif
-
-#if ODE_0_8
-  //ode 0.8 code
-  const dReal* Tptr=dGeomTriMeshGetLastTransform(geom());
-#else
-  //ode 0.7 code
-  const double* Tptr=(const double*)dGeomTriMeshDataGet(triMeshData(),TRIMESH_LAST_TRANSFORMATION);
-#endif
-
-  if(Tptr)
-    CopyMatrixCM(mat,Tptr);
-  else
-    mat.setIdentity();
-}
-
 void ODETriMesh::SetPadding(Real padding)
 {
   dGetCustomMeshData(geom())->outerMargin = padding;

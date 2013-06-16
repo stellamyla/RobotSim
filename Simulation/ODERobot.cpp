@@ -6,7 +6,8 @@
 #include <math/angle.h>
 #include <math3d/interpolate.h>
 #include <robotics/Rotation.h>
-//#include "Dynamics/Misc.h"  //for AngVelToEulerAngles and EulerAnglesToAngVel
+
+#define USE_JOINT_STOPS 1
 
 double ODERobot::defaultPadding = 0.0025;
 ODESurfaceProperties ODERobot::defaultSurface = {0.1,1.0,Inf,Inf};
@@ -103,12 +104,22 @@ void ODERobot::Create(dWorldID worldID)
       int link=robot.joints[i].linkIndex;
       int parent = robot.parents[link];
       if(parent >= 0) {
-	//attach to an existing body
-	int body = jointToBody[linkToJoint[parent]];
-	Assert(body >= 0);
-	bodyJoints[body].push_back(i);
-	bodyLinks[body].push_back(link);
-	jointToBody[i] = body;
+	if(robot.links[link].mass != 0 && robot.links[parent].mass != 0) {
+	  //printf("Weld joint %d (link %d -> %d) considered different bodies\n",i,link,parent);
+	  //make a new body
+	  jointToBody[i] = bodyJoints.size();
+	  bodyJoints.push_back(vector<int>(1,i));
+	  bodyLinks.push_back(vector<int>(1,robot.joints[i].linkIndex));
+	}
+	else {
+	  //printf("Weld joint %d (link %d -> %d) considered as same body\n",i,link,parent);
+	  //attach to an existing body
+	  int body = jointToBody[linkToJoint[parent]];
+	  Assert(body >= 0);
+	  bodyJoints[body].push_back(i);
+	  bodyLinks[body].push_back(link);
+	  jointToBody[i] = body;
+	}
       }
       else {
 	//create a new body attached to the world
@@ -280,8 +291,15 @@ void ODERobot::Create(dWorldID worldID)
 	  dJointSetFeedback(jointID[link],&jointFeedback[link]);
 	  dJointSetFixed(jointID[link]);
 	}
-	else
-	  Assert(bodyID[link] == 0);
+	else {
+	  if(bodyID[link] != 0) {
+	    //not considered the same body as the parent
+	    jointID[link] = dJointCreateFixed(worldID,jointGroupID);
+	    dJointAttach(jointID[link],bodyID[link],bodyID[parent]);
+	    dJointSetFeedback(jointID[link],&jointFeedback[link]);
+	    dJointSetFixed(jointID[link]);
+	  }
+	}
       }
       break;
     case RobotJoint::Normal:
@@ -299,9 +317,16 @@ void ODERobot::Create(dWorldID worldID)
 	  dJointSetHingeAnchor(jointID[link],pos.x,pos.y,pos.z);
 	  dJointSetHingeAxis(jointID[link],axis.x,axis.y,axis.z);
 	  if(robot.joints[i].type != RobotJoint::Spin) {
-	    //stops are currently not working correctly -- must be within [-pi,pi]
-	    //dJointSetHingeParam(jointID[link],dParamLoStop,robot.qMin(link)+1e-3);
-	    //dJointSetHingeParam(jointID[link],dParamHiStop,robot.qMax(link)-1e-3);
+	    if(USE_JOINT_STOPS) {
+	      //stops are not working correctly if they are out of the range [-pi,pi]
+	      if(robot.qMin(link) < -Pi)
+		printf("ODERobot: Warning, turning off low stop because of ODE range mismatch\n");
+	      else
+		dJointSetHingeParam(jointID[link],dParamLoStop,robot.qMin(link));
+	      if(robot.qMax(link) > Pi)
+		printf("ODERobot: Warning, turning off high stop because of ODE range mismatch\n");
+	      else dJointSetHingeParam(jointID[link],dParamHiStop,robot.qMax(link));
+	    }
 	    dJointSetHingeParam(jointID[link],dParamBounce,0);
 	  }
 	  dJointSetHingeParam(jointID[link],dParamFMax,0);
@@ -312,112 +337,11 @@ void ODERobot::Create(dWorldID worldID)
 	  dJointAttach(jointID[link],bodyID[link],bp);
 	  Vector3 axis = robot.links[link].T_World.R*robot.links[link].w;
 	  dJointSetSliderAxis(jointID[link],axis.x,axis.y,axis.z);
-	  //stops are currently not working correctly -- must be within [-pi,pi]
-	  //dJointSetSliderParam(jointID[link],dParamLoStop,robot.qMin(link)+1e-3);
-	  //dJointSetSliderParam(jointID[link],dParamHiStop,robot.qMax(link)-1e-3);
-	  dJointSetSliderParam(jointID[link],dParamBounce,0);
-	  dJointSetSliderParam(jointID[link],dParamFMax,0);
-	}
-	dJointSetFeedback(jointID[link],&jointFeedback[link]);
-      }
-      break;
-    case RobotJoint::Floating:
-      break;
-    default:
-      FatalError("TODO: setup affine and other custom joints\n");
-      break;
-    }
-  }
-
-  /*
-  bodyID.resize(robot.links.size(),NULL);
-  geometry.resize(robot.links.size(),NULL);
-  jointID.resize(robot.links.size(),NULL);
-  jointFeedback.resize(robot.links.size());
-
-  //OLD VERSION: didn't take weld joints into account
-  for(size_t i=0;i<robot.links.size();i++) {
-    if(robot.links[i].mass != 0) {
-      bodyID[i] = dBodyCreate(worldID);
-      dMass mass;
-      mass.mass = robot.links[i].mass;
-      //NOTE: in ODE, COM must be zero vector!
-      //CopyVector(mass.c,robot.links[i].com);
-      mass.c[0] = mass.c[1] = mass.c[2] = 0; mass.c[3] = 1;
-      CopyMatrix(mass.I,robot.links[i].inertia);
-      if(robot.links[i].inertia.isZero()) {
-	fprintf(stderr,"Warning, robot link %d has zero inertia, setting to identity * mass %g\n",i,robot.links[i].mass);
-	Matrix3 temp; temp.setIdentity(); temp*=robot.links[i].mass;
-	CopyMatrix(mass.I,temp);
-      }
-      int res=dMassCheck(&mass);
-      if(res != 1) {
-	fprintf(stderr,"Uh... mass of link %d is not considered to be valid by ODE?\n",i);
-	std::cerr<<"Inertia: "<<robot.links[i].inertia<<std::endl;
-      }
-      dBodySetMass(bodyID[i],&mass);
-      
-      if(!robot.geometry[i].tris.empty()) {
-	geometry[i] = new ODETriMesh;
-	geometry[i]->Create(robot.geometry[i],spaceID,-robot.links[i].com);
-	dGeomSetBody(geometry[i]->geom(),bodyID[i]);
-	dGeomSetData(geometry[i]->geom(),(void*)i);
-	//set defaults
-	geometry[i]->SetPadding(defaultPadding);
-	geometry[i]->surf() = defaultSurface;
-      }
-    }
-  }
-  Config oldQ = robot.q;
-  robot.q.setZero();
-  robot.UpdateFrames();
-  SetConfig(robot.q);
-
-  Assert(jointGroupID == 0);
-  jointGroupID = dJointGroupCreate(0);
-  for(size_t i=0;i<robot.joints.size();i++) {
-    switch(robot.joints[i].type) {
-    case RobotJoint::Weld:
-      {
-	int link = robot.joints[i].linkIndex;
-	int parent = robot.parents[link];
-	dBodyID bp = (parent == -1? 0 : bodyID[parent]);
-	jointID[link] = dJointCreateFixed(worldID,jointGroupID);
-	dJointAttach(jointID[link],bodyID[link],bp);
-	dJointSetFeedback(jointID[link],&jointFeedback[link]);
-	dJointSetFixed(jointID[link]);
-      }
-      break;
-    case RobotJoint::Normal:
-    case RobotJoint::Spin:
-      {
-	int link = robot.joints[i].linkIndex;
-	int parent = robot.parents[link];
-	dBodyID bp = (parent == -1? 0 : bodyID[parent]);
-	if(robot.links[link].type == RobotLink3D::Revolute) {
-	  jointID[link] = dJointCreateHinge(worldID,jointGroupID);
-	  dJointAttach(jointID[link],bodyID[link],bp);
-	  Vector3 pos = robot.links[link].T_World.t;
-	  Vector3 axis = robot.links[link].T_World.R*robot.links[link].w;
-	  dJointSetHingeAnchor(jointID[link],pos.x,pos.y,pos.z);
-	  dJointSetHingeAxis(jointID[link],axis.x,axis.y,axis.z);
-	  if(robot.joints[i].type != RobotJoint::Spin) {
-	    //stops are currently not working correctly -- must be within [-pi,pi]
-	    //dJointSetHingeParam(jointID[link],dParamLoStop,robot.qMin(link)+1e-3);
-	    //dJointSetHingeParam(jointID[link],dParamHiStop,robot.qMax(link)-1e-3);
-	    dJointSetHingeParam(jointID[link],dParamBounce,0);
+	  //stops are not working correctly if they are out of the range [-pi,pi]
+	  if(USE_JOINT_STOPS) {
+	    dJointSetSliderParam(jointID[link],dParamLoStop,robot.qMin(link));
+	    dJointSetSliderParam(jointID[link],dParamHiStop,robot.qMax(link));
 	  }
-	  dJointSetHingeParam(jointID[link],dParamFMax,0);
-	}
-	else {
-	  assert(robot.joints[i].type != RobotJoint::Spin);
-	  jointID[link] = dJointCreateSlider(worldID,jointGroupID);
-	  dJointAttach(jointID[link],bodyID[link],bp);
-	  Vector3 axis = robot.links[link].T_World.R*robot.links[link].w;
-	  dJointSetSliderAxis(jointID[link],axis.x,axis.y,axis.z);
-	  //stops are currently not working correctly -- must be within [-pi,pi]
-	  //dJointSetSliderParam(jointID[link],dParamLoStop,robot.qMin(link)+1e-3);
-	  //dJointSetSliderParam(jointID[link],dParamHiStop,robot.qMax(link)-1e-3);
 	  dJointSetSliderParam(jointID[link],dParamBounce,0);
 	  dJointSetSliderParam(jointID[link],dParamFMax,0);
 	}
@@ -431,10 +355,9 @@ void ODERobot::Create(dWorldID worldID)
       break;
     }
   }
-  */
+
   robot.UpdateConfig(oldQ);
   SetConfig(oldQ);
-  UpdateLastTransforms();
 }
 
 void ODERobot::SetJointDryFriction(int joint,Real coeff)
@@ -929,27 +852,12 @@ void ODERobot::AddDriverTorques(const Config& t)
     AddDriverTorque(i,t(i));
 }
 
-void ODERobot::UpdateLastTransforms()
-{
-  for(size_t i=0;i<bodyID.size();i++) {
-    if(!bodyID[i]) continue;
-    if(!geometry[i]) continue;
-    RigidTransform T;
-    const dReal* pos = dBodyGetPosition(bodyID[i]);
-    const dReal* rot = dBodyGetRotation(bodyID[i]);
-    CopyVector(T.t,pos);
-    CopyMatrix(T.R,rot);
-    Matrix4 mat(T);
-    geometry[i]->SetLastTransform(mat);
-  }
-}
 
 bool ODERobot::ReadState(File& f)
 {
   int initPos = f.Position();
   for(size_t i=0;i<robot.links.size();i++) {
     if(bodyID[i] == NULL)  continue;
-    RigidTransform Told;
     dReal w[3],v[3];
     dReal pos[3];
     dReal q[4];
@@ -957,16 +865,11 @@ bool ODERobot::ReadState(File& f)
     if(!ReadArrayFile(f,q,4)) return false;
     if(!ReadArrayFile(f,w,3)) return false;
     if(!ReadArrayFile(f,v,3)) return false;
-    if(!ReadFile(f,Told.R)) return false;
-    if(!ReadFile(f,Told.t)) return false;
 
     dBodySetPosition(bodyID[i],pos[0],pos[1],pos[2]);
     dBodySetQuaternion(bodyID[i],q);
     dBodySetLinearVel(bodyID[i],v[0],v[1],v[2]);
     dBodySetAngularVel(bodyID[i],w[0],w[1],w[2]);
-    Matrix4 mat(Told);
-    if(geometry[i])
-      geometry[i]->SetLastTransform(mat);
   }
 
   /*
@@ -993,28 +896,16 @@ bool ODERobot::WriteState(File& f) const
 {
   for(size_t i=0;i<robot.links.size();i++) {
     if(bodyID[i] == NULL)  continue;
-    RigidTransform Told;
 
     const dReal* pos=dBodyGetPosition(bodyID[i]);
     const dReal* q=dBodyGetQuaternion(bodyID[i]);
     const dReal* v=dBodyGetLinearVel(bodyID[i]);
     const dReal* w=dBodyGetAngularVel(bodyID[i]);
 
-    Matrix4 mat;
-    if(geometry[i])
-      geometry[i]->GetLastTransform(mat);
-    else
-      mat.setIdentity();
-    Assert(mat(3,0)==0);
-    Assert(mat(3,1)==0);
-    Assert(mat(3,2)==0);
-    Told.set(mat);
     if(!WriteArrayFile(f,pos,3)) return false;
     if(!WriteArrayFile(f,q,4)) return false;
     if(!WriteArrayFile(f,w,3)) return false;
     if(!WriteArrayFile(f,v,3)) return false;
-    if(!WriteFile(f,Told.R)) return false;
-    if(!WriteFile(f,Told.t)) return false;
   }
   return true;
 }
@@ -1054,29 +945,22 @@ void ODERobot::InterpolateState(const Vector& x,const Vector& y,Real u)
     Tyold.t.set(y(k),y(k+1),y(k+2));
     k+=3;
 
-    RigidTransform T,Told;
+    RigidTransform T;
     Vector3 w,v;
     interpolate(Tx,Ty,u,T);
     interpolate(wx,wy,u,w);
     interpolate(vx,vy,u,v);
-    interpolate(Txold,Tyold,u,Told);
     for(int p=0;p<3;p++)
       for(int q=0;q<3;q++) 
 	Assert(IsFinite(T.R(p,q)));
-    for(int p=0;p<3;p++)
-      for(int q=0;q<3;q++) 
-	Assert(IsFinite(Told.R(p,q)));
     for(int p=0;p<3;p++) {
       Assert(IsFinite(T.t[p]));
-      Assert(IsFinite(Told.t[p]));
       Assert(IsFinite(w[p]));
       Assert(IsFinite(v[p]));
     }
 
     SetLinkTransform(i,T);
     SetLinkVelocity(i,w,v);
-    Matrix4 mat(Told);
-    geometry[i]->SetLastTransform(mat);
   }
   Assert(k == x.n);
 }
