@@ -9,11 +9,15 @@ class MyGLViewer(GLRealtimeProgram):
         GLRealtimeProgram.__init__(self,"My GL program")
         self.world = world
         #Put your initialization code here
-        #the current example creates a collision class, simulator, and
-        #simulation flag
+        #the current example creates a collision class, simulator, 
+        #simulation flag, and screenshot flags
         self.collider = robotcollide.WorldCollider(world)
         self.sim = Simulator(world)
         self.simulate = False
+
+        self.saveScreenshots = False
+        self.nextScreenshotTime = 0
+        self.screenshotCount = 0
 
     def display(self):
         #Put your display handler here
@@ -28,6 +32,12 @@ class MyGLViewer(GLRealtimeProgram):
     def idle(self):
         #Put your idle loop handler here
         #the current example simulates with the current time step self.dt
+        if self.simulate and self.saveScreenshots:
+            if self.ttotal >= self.nextScreenshotTime:
+                self.save_screen("image%04d.ppm"%(self.screenshotCount,))
+            self.screenshotCount += 1
+            self.nextScreenshotTime += 1.0/30.0;
+
         if self.simulate:
             self.control_loop()
             self.sim.simulate(self.dt)
@@ -49,11 +59,14 @@ class MyGLViewer(GLRealtimeProgram):
 
     def keyboardfunc(self,c,x,y):
         #Put your keyboard handler here
-        #the current example toggles simulation
+        #the current example toggles simulation / movie mode
         print c,"pressed"
         if c == 's':
             self.simulate = not self.simulate
             print "Simulating:",self.simulate
+        elif c == 'm':
+            self.saveScreenshots = not self.saveScreenshots
+            print "Movie mode:",self.saveScreenshots
         glutPostRedisplay()
 
     def click_world(self,x,y):
