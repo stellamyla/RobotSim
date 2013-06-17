@@ -1,5 +1,5 @@
 #include "Simulation/WorldSimulation.h"
-#include "Simulation/TabulatedController.h"
+#include "Control/TabulatedController.h"
 #include <utils/indexing.h>
 #include <utils/stringutils.h>
 #include "IO/XmlWorld.h"
@@ -86,8 +86,12 @@ inline RobotController* MakeController(Robot* robot,const char* file)
 }
 inline void MakeSensors(Robot* robot,RobotSensors& sensors)
 {
-  sensors.hasJointPosition=true;
-  sensors.hasJointVelocity=true;
+  JointPositionSensor* jp = new JointPositionSensor;
+  JointVelocitySensor* jv = new JointVelocitySensor;
+  jp->q.resize(robot->q.n,Zero);
+  jv->dq.resize(robot->q.n,Zero);
+  sensors.sensors.push_back(jp);
+  sensors.sensors.push_back(jv);
 }
 
 
@@ -515,6 +519,10 @@ int main(int argc, char** argv)
 {  
   if(argc < 2) {
     printf("USAGE: CartPole [options] [robot, terrain, object, world files]\n");
+    printf("Options:\n");
+    printf("  -cartpole: use the cart-pole task\n");
+    printf("  -swingup: use the swing-up task\n");
+    printf("  -o: optimize the policy\n");
     return 0;
   }
   XmlWorld xmlWorld;
@@ -523,11 +531,24 @@ int main(int argc, char** argv)
   world.lights[0].setColor(GLColor(1,1,1));
   world.lights[0].setDirectionalLight(Vector3(0.2,-0.4,1));
   world.lights[0].setColor(GLColor(1,1,1));
+  bool cartpole = true;
+  bool optimize = false;
 
   for(int i=1;i<argc;i++) {
     if(argv[i][0] == '-') {
-      printf("Unknown option %s",argv[i]);
-      return 1;
+      if(0==strcmp(argv[i],"-cartpole")) {
+	cartpole = true;
+      }
+      else if(0==strcmp(argv[i],"-swingup")) {
+	cartpole = false;
+      }
+      else if(0==strcmp(argv[i],"-o")) {
+	optimize = true;
+      }
+      else {
+	printf("Unknown option %s",argv[i]);
+	return 1;
+      }
     }
     else {
       const char* ext=FileExtension(argv[i]);
@@ -551,13 +572,23 @@ int main(int argc, char** argv)
 
   Config qorig = world.robots[0].robot->q;
 
-  //OptimizeSwingUp(*world.robots[0].robot);
-  //OptimizeCartPole(*world.robots[0].robot);
+  if(optimize) {
+    if(cartpole)
+      OptimizeCartPole(*world.robots[0].robot);
+    else
+      OptimizeSwingUp(*world.robots[0].robot);
+  }
 
-  world.robots[0].robot->q(0) = 3.0*Pi/2.0;
-  world.robots[0].robot->UpdateFrames();
-  //world.robots[0].robot->UpdateConfig(qorig);
+
+  if(!cartpole) {
+    world.robots[0].robot->q(0) = 3.0*Pi/2.0;
+    world.robots[0].robot->UpdateFrames();
+  }
+  else {
+    world.robots[0].robot->UpdateConfig(qorig);  
+  }
   world.robots[0].robot->dq.setZero();
+
 
   WorldSimulation sim;
   sim.Init(&world);
@@ -565,8 +596,10 @@ int main(int argc, char** argv)
   sim.robotControllers.resize(world.robots.size());
   for(size_t i=0;i<sim.robotControllers.size();i++) {
     Robot* robot=world.robots[i].robot;
-    sim.SetController(i,MakeController(robot,"swingup.policy")); 
-    //sim.SetController(i,MakeController(robot,"cartpole.policy")); 
+    if(!cartpole) 
+      sim.SetController(i,MakeController(robot,"swingup.policy")); 
+    else
+      sim.SetController(i,MakeController(robot,"cartpole.policy")); 
     MakeSensors(robot,sim.controlSimulators[i].sensors);
   }
 
