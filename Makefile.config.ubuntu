@@ -9,25 +9,7 @@
 
 CC=g++
 
-uname_O := $(shell sh -c 'uname -o 2>/dev/null || echo not')
-
 BUILDNAME=linux
-#BUILDNAME=unknownOS
-#BUILDNAME=MacOSX
-
-ifneq ($(OSTYPE),)
-  BUILDNAME=$(OSTYPE)
-endif
-ifneq ($(OS),)
-  BUILDNAME=$(OS)
-endif
-CYGWIN=0
-ifeq ($(uname_O),Cygwin)
-	CYGWIN=1
-endif
-ifeq ($(BUILDNAME),MacOSX)
-	MAC_OS_X=1
-endif
 
 ## Default Settings
 TINYXML=/usr/include
@@ -44,21 +26,6 @@ KRISLIB=Library/KrisLibrary
 FREEGLUT=1
 ODEDOUBLE=1
 
-## Mac Settings
-#TINYXML=Library/tinyxml
-#GLUT=/System/Library/Frameworks/GLUT.framework
-#GLUI=/opt/local
-#PQP=Library/KrisLibrary/geometry/PQP
-##LPSOLVE=/opt/local
-#GLPK=/opt/local
-#OPT++=/opt/local
-#ROBO=Library/KrisLibrary/Robotics
-##CLAPACK=Library/CLAPACK
-#ODE=/opt/local
-#KRISLIB=Library/KrisLibrary
-#FREEGLUT=0
-#ODEDOUBLE=0
-
 ##################################################
 # Probably don't have to modify the following,
 # but can if needed
@@ -69,7 +36,7 @@ ifeq ($(BUILDNAME),MacOSX)
 endif
 
 ifeq ($(BUILDNAME),linux)
-     DEFINES+=LINUX dDOUBLE
+     DEFINES+=LINUX
 endif
 
 ifeq ($(CYGWIN),1)
@@ -106,16 +73,15 @@ DEFINES+=TIXML_USE_STL
 KRISLIBINCLUDE=$(KRISLIB)
 
 KRISLIBS=Robotics noise spline statistics GLdraw camera optimization geometry meshing math3d math image utils
-#KRISLIBDIR=$(KRISLIB)/libs_$(BUILDNAME)
 KRISLIBDIR=$(KRISLIB)/lib
 
 #defines for Makefile and Makefile.template
 
 ifeq ($(MAC_OS_X),1)
-	INCDIRS=.. ../$(KRISLIBINCLUDE) $(GLUTINCLUDE) ../$(PQP)/include $(ODE)/include ../Library
+	INCDIRS=.. ../$(KRISLIBINCLUDE) $(GLUTINCLUDE) ../$(PQP)/include $(ODE)/include ../$(TINYXML)
 	LIBDIRS= $(GLUTLIBDIR) $(PQPLIBDIR) $(GLPK) $(KRISLIBDIR) $(LAPACKLIBDIR) $(ODELIBDIR) $(TINYXMLLIBDIR)
 else
-	INCDIRS=/usr/include .. ../$(KRISLIBINCLUDE) $(GLUTINCLUDE) ../$(PQP)/include ../$(ODE)/include ../Library
+	INCDIRS=/usr/include .. ../$(KRISLIBINCLUDE) $(GLUTINCLUDE) ../$(PQP)/include ../$(ODE)/include ../$(TINYXML)
 	LIBDIRS=/usr/lib $(GLUTLIBDIR) $(PQPLIBDIR) $(GLPK)/src $(KRISLIBDIR) $(LAPACKLIBDIR) $(ODELIBDIR) $(TINYXMLLIBDIR)
 endif
 

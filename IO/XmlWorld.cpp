@@ -1,4 +1,5 @@
 #include "XmlWorld.h"
+#include <meshing/IO.h>
 #include <utils/stringutils.h>
 
 XmlRobot::XmlRobot(TiXmlElement* _element,string _path)
@@ -14,8 +15,14 @@ bool XmlRobot::GetRobot(Robot& robot)
   }
   string sfn = path + string(fn);
   if(!robot.Load(sfn.c_str())) {
-    fprintf(stderr,"XmlRobot: error loading %s\n",sfn.c_str());
-    return false;
+    fprintf(stderr,"XmlRobot: error loading %s, trying absolute path\n",sfn.c_str());
+    //try absolute path
+    if(!robot.Load(fn)) {
+      fprintf(stderr,"XmlRobot: error loading %s\n",sfn.c_str());
+      return false;
+    }
+    else
+      fprintf(stderr,"XmlRobot: absolute path succeeded\n");
   }
   Vector q;
   if(e->QueryValueAttribute("config",&q)==TIXML_SUCCESS) {
@@ -49,8 +56,13 @@ bool XmlRigidObject::GetObject(RigidObject& obj)
   if(fn) {
     string sfn = path + string(fn);
     if(!obj.Load(sfn.c_str())) {
-      fprintf(stderr,"XmlRigidObject: error loading obj file %s\n",sfn.c_str());
-      return false;
+      fprintf(stderr,"XmlRigidObject: error loading %s, trying absolute path\n",sfn.c_str());
+      if(!obj.Load(fn)) {
+	fprintf(stderr,"XmlRigidObject: error loading obj file %s\n",sfn.c_str());
+	return false;
+      }
+      else
+	fprintf(stderr,"XmlRigidObject: absolute path succeeded\n");
     }
   }
   TiXmlElement* geom=e->FirstChildElement("geometry");
@@ -58,9 +70,14 @@ bool XmlRigidObject::GetObject(RigidObject& obj)
     const char* fn = geom->Attribute("mesh");
     if(fn) {
       string sfn = path + string(fn);
-      if(!obj.mesh.Load(sfn.c_str())) {
-	fprintf(stderr,"XmlRigidObject: error loading meshfile %s\n",sfn.c_str());
-	return false;
+      if(!Meshing::Import(sfn.c_str(),obj.mesh)) {
+	fprintf(stderr,"XmlRigidObject: error loading meshfile %s, trying absolute path\n",sfn.c_str());
+	if(!Meshing::Import(fn,obj.mesh)) {
+	  fprintf(stderr,"XmlRigidObject: error loading meshfile %s\n",sfn.c_str());
+	  return false;
+	}
+	else
+	  fprintf(stderr,"XmlRigidObject: absolute path succeeded\n");
       }
     }
     Matrix4 xform;
@@ -168,10 +185,15 @@ bool XmlTerrain::GetTerrain(Environment& env)
     fprintf(stderr,"XmlTerrain: element does not contain file attribute\n");
     return false;
   }
-  string sfn = path+string(fn);
+  string sfn = path + string(fn);
   if(!env.Load(sfn.c_str())) {
-    fprintf(stderr,"XmlTerrain: error loading %s\n",sfn.c_str());
-    return false;
+    fprintf(stderr,"XmlTerrain: error loading %s, trying absolute path\n",sfn.c_str());
+    if(!env.Load(fn)) {
+      fprintf(stderr,"XmlTerrain: error loading %s\n",sfn.c_str());
+      return false;
+    }
+    else
+      fprintf(stderr,"XmlTerrain: absolute path succeeded\n");
   }
 
   Real kf;

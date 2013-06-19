@@ -129,10 +129,10 @@ KRISLIBDIR = $(KRISLIB)/lib
 #defines for Makefile and Makefile.template
 
 ifeq ($(MAC_OS_X),1)
-	INCDIRS = .. ../$(KRISLIBINCLUDE) $(GLUTINCLUDE) ../$(PQP)/include $(ODE)/include ../Library
+	INCDIRS = .. ../$(KRISLIBINCLUDE) $(GLUTINCLUDE) ../$(PQP)/include $(ODE)/include ../$(TINYXML)
 	LIBDIRS =  $(GLUTLIBDIR) $(PQPLIBDIR) $(GLPK) $(KRISLIBDIR) $(LAPACKLIBDIR) $(ODELIBDIR) $(TINYXMLLIBDIR)
 else
-	INCDIRS = .. ../$(KRISLIBINCLUDE) $(addprefix ../,$(GLUTINCLUDE)) ../$(PQP)/include ../$(ODE)/include ../Library
+	INCDIRS = .. ../$(KRISLIBINCLUDE) $(addprefix ../,$(GLUTINCLUDE)) ../$(PQP)/include ../$(ODE)/include ../$(TINYXML)
 	LIBDIRS =  $(GLUTLIBDIR) $(PQPLIBDIR) $(GLPK)/src $(KRISLIBDIR) $(LAPACKLIBDIR) $(ODELIBDIR) $(TINYXMLLIBDIR)
 endif
 

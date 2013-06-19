@@ -2061,7 +2061,8 @@ bool Robot::LoadURDF(const char* fn){
 	URDFConverter::setJointforNodes(urdfJoints, linkNodes);
 	URDFConverter::processTParentTransformations(linkNodes);
 
-	double default_mass = 0.01;
+	double default_mass = 0.001;
+	Matrix3 default_inertia; default_inertia.setIdentity(); default_inertia *= 0.00001;
 
 	for (int i = 0; i < linkNodes.size(); i++) {
 		URDFLinkNode* linkNode = &linkNodes[i];
@@ -2090,9 +2091,9 @@ bool Robot::LoadURDF(const char* fn){
 		}
 		//Otherwise, set it to default value
 		else {
-			this->links[link_index].com = Vector3(0, 0, 0); //done, check!
-			this->links[link_index].mass = default_mass; //done
-			this->links[link_index].inertia.setIdentity(); //done
+			this->links[link_index].com = Vector3(0, 0, 0);
+			this->links[link_index].mass = default_mass;
+			this->links[link_index].inertia = default_inertia;
 		}
 
 		//At first, set them to be default Inf value; it will be modified in later steps.
@@ -2123,7 +2124,10 @@ bool Robot::LoadURDF(const char* fn){
 				this->velMin[link_index] = -joint->limits->velocity;
 				this->torqueMax[link_index] = joint->limits->effort; //TODO: in URDF, no explicit value specified, effort has unit n*m,
 			}
-
+			if(this->joints[joint_index].type == RobotJoint::Weld){
+				qMin[link_index] = 0;
+				qMax[link_index] = 0;
+			}
 			if (this->joints[joint_index].type == RobotJoint::Normal
 					|| this->joints[joint_index].type == RobotJoint::Spin) {
 				int linkI = this->joints[joint_index].linkIndex;

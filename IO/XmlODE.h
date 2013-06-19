@@ -1,7 +1,7 @@
 #ifndef XML_ODE_H
 #define XML_ODE_H
 
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include "Simulation/ODESimulator.h"
 #include "Simulation/WorldSimulation.h"
 

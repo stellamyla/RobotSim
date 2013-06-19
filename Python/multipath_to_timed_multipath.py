@@ -1,6 +1,3 @@
-"""This script converts an untimed multipath to a timed one.  To change
-the settings, edit the script."""
-
 import math
 import sys
 import xml.etree.ElementTree as ET
@@ -27,13 +24,6 @@ warned = False
 curtime = 0.0
 for secnum,sec in enumerate(root.findall('section')):
     milestones = sec.findall('milestone')
-    #HACK: slower place hands section
-    if secnum == 0:
-        speed = 8
-    elif secnum % 2 == 1:
-        speed = 120
-    else:
-        speed = 60
     for i,m in enumerate(milestones):
         if 'time' in m.attrib:
             if not warned:
@@ -74,5 +64,7 @@ for secnum,sec in enumerate(root.findall('section')):
         #copy in last milestone
         e.set('time',str(curtime))
         sec.append(e)
+
+print "Timed path duration:",curtime
 
 tree.write(sys.argv[2])

@@ -12,7 +12,7 @@ LIBROBOTSIM = -L$(LIBDIR) -lRobotSim
 
 ##################### Start the action #########################
 default: RobotTest 
-.PHONY: RobotTest SimTest SimUtil PosMeasure UserTrials UserTrialsMT deps lib
+.PHONY: RobotTest SimTest SimUtil PosMeasure URDFtoRob UserTrials UserTrialsMT deps lib
 
 deps: dep-KrisLibrary dep-tinyxml dep-glui dep-ode
 	;
@@ -82,6 +82,9 @@ SimUtil:  lib
 	cd Main; make simutil.o
 	 $(CC) $(FLAGS) Main/$(OBJDIR)/simutil.o $(LIBROBOTSIM) $(LIB) -o $@
 
+URDFtoRob:  lib
+	cd Main; make urdftorob.o
+	 $(CC) $(FLAGS) Main/$(OBJDIR)/urdftorob.o $(LIBROBOTSIM) $(LIB) -o $@		
 UserTrials:  lib
 	cd Main; make usertrials.o
 	 $(CC) $(FLAGS) $(OBJS) Main/$(OBJDIR)/usertrials.o Input/$(OBJDIR)/*.o $(LIBROBOTSIM)  $(LIBROBOTSIM) $(LIB) -o $@

@@ -1,7 +1,7 @@
 #ifndef XML_WORLD_H
 #define XML_WORLD_H
 
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include "Modeling/World.h"
 
 class XmlRobot

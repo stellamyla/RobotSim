@@ -1,7 +1,7 @@
 #include "Resources.h"
 #include <utils/stringutils.h>
 #include <utils/fileutils.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include "IO/XmlWorld.h"
 #include <sstream>
 
@@ -417,9 +417,15 @@ ResourcePtr CastResource(const ResourcePtr& item,const char* type)
       p->name = pr->name;
       for(size_t i=0;i<pr->path.sections.size();i++) 
 	p->milestones.insert(p->milestones.end(),pr->path.sections[i].milestones.begin(),pr->path.sections[i].milestones.end());
-      p->times.resize(p->milestones.size());
-      for(size_t i=0;i<p->times.size();i++)
-	p->times[i] = i;
+      if(pr->path.HasTiming()) {
+	for(size_t i=0;i<pr->path.sections.size();i++) 
+	  p->times.insert(p->times.end(),pr->path.sections[i].times.begin(),pr->path.sections[i].times.end());
+      }
+      else {
+	p->times.resize(p->milestones.size());
+	for(size_t i=0;i<p->times.size();i++)
+	  p->times[i] = i;
+      }
       return p;
     }
     else if(0==strcmp(type,"Configs")) {
