@@ -10,13 +10,13 @@ robotSimDir = '../..'
 krisLibraryDir = 'Library/KrisLibrary'
 odedir = 'Library/ode-0.11.1'
 gluidir = 'Library/glui-2.36'
+tinyxmlDir = 'Library/tinyxml'
 #optional
 assimpDir='Library/assimp--3.0.1270-sdk'
 
+includeDirs = [robotSimDir,krisLibraryDir,tinyxmlDir,odedir+'/include','/usr/include','.']
 
-includeDirs = [robotSimDir,'Library/KrisLibrary','Library',odedir+'/include','/usr/include','.']
-
-tinyxmlLibDir = 'Library/tinyxml'
+tinyxmlLibDir = tinyxmlDir
 odelibdir = odedir+'/ode/src/.libs'
 gluilibdir = gluidir+'/src/lib'
 assimpLibDir = assimpDir+'/lib'
@@ -40,9 +40,9 @@ if on_cygwin:
     kllibs.append('glut32')
 
 #needed for RobotSim to link
-#libs = ['RobotSim']+kllibs+['ode']
+libs = ['RobotSim']+kllibs+['ode']
 #switch to this if assimp support is desired
-libs = ['RobotSim']+kllibs+['ode','assimp']
+#libs = ['RobotSim']+kllibs+['ode','assimp']
 
 setup(name='RobotSim',
       version='0.2',
