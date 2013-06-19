@@ -2,7 +2,7 @@
 #define XML_ENVIRONMENT_H
 
 //#include <string>
-//#include <tinyxml/tinyxml.h>
+//#include <tinyxml.h>
 //#include <vector>
 //#include <math3d/primitives.h>
 #include "Modeling/World.h"

@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <string>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include <math3d/primitives.h>
 #include <utils/stringutils.h>
 #include "PrimitiveShape.h"
