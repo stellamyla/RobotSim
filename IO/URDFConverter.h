@@ -31,6 +31,7 @@ public:
 	RigidTransform T_link_to_colgeom;
 	RigidTransform T_parent;
 	Vector3 axis;
+	bool geomPrimitive;
 	string geomName;
 	Matrix4 geomScale;
 	urdf::Joint* joint;
@@ -38,7 +39,6 @@ public:
 
 class URDFConverter {
 public:
-	void convert( char* filename);
 	static int GetLinkIndexfromName(string name, const vector<string> linknames);
 	static RobotJoint::Type jointType_URDF2ROB(int );
 	static void DFSLinkTree( URDFLinkNode& root, vector<URDFLinkNode>& linkNodes);
@@ -49,9 +49,8 @@ public:
 	static void ConvertWrltoTri(string filename);
 //	static void ScalePrimitiveGeom(string infilename, string outfilename);
 
-	//The location of primitive_mesh and urdf_mesh must be provided.
-	static const string primitive_mesh_path;
-	static const string urdf_mesh_path;
+	//The location of primitive_mesh must be provided.
+	static string primitive_mesh_path;
 };
 
 #endif /* URDFCONVERTER_H_ */

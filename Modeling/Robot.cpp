@@ -1961,6 +1961,7 @@ void Robot::GetDriverJacobian(int d, Vector& J) {
 
 bool Robot::LoadURDF(const char* fn){
 	string s(fn);
+	string path = GetFilePath(s);
 	//Get content from the Willow Garage parser
 	boost::shared_ptr<urdf::ModelInterface> parser = urdf::parseURDF(s);
 	//links_size: URDF 36, ROB 41 with 5 extra DOFS for base
@@ -2156,14 +2157,19 @@ bool Robot::LoadURDF(const char* fn){
 		}
 		//geometry
 		if (!linkNode->geomName.empty()) {
-			const char* ext = FileExtension(linkNode->geomName.c_str());
-			if (!LoadGeometry(link_index, linkNode->geomName.c_str())) {
-			  cout << "Failed loading geometry " << linkNode->geomName
-			       << " for link " << link_index << endl;
-			  return false;
-			}
+		  string fn;
+		  if(linkNode->geomPrimitive)
+		    fn = linkNode->geomName;
+		  else
+		    fn += path + linkNode->geomName;
+		  const char* ext = FileExtension(fn.c_str());
+		  if (!LoadGeometry(link_index, fn.c_str())) {
+		    cout << "Failed loading geometry " << fn
+			 << " for link " << link_index << endl;
+		    return false;
+		  }
 
-			this->geometry[link_index].Transform(linkNode->geomScale);
+		  this->geometry[link_index].Transform(linkNode->geomScale);
 		}
 	}
 

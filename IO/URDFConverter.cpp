@@ -12,12 +12,7 @@
 using namespace std;
 using namespace PrimitiveShape;
 
-const string URDFConverter::primitive_mesh_path("DRC_Jingru/PrimitiveGeom/");
-const string URDFConverter::urdf_mesh_path("data/pr2_description/meshes/output/");
-
-void URDFConverter::convert(char* fn) {
-
-}
+string URDFConverter::primitive_mesh_path("data/objects/urdf_primitives/");
 
 int URDFConverter::GetLinkIndexfromName(string name, const vector<string> linknames){
 	int link_index = -1;
@@ -118,8 +113,10 @@ void URDFLinkNode::GetGeometryProperty(){
 		return;
 	}
 	geomScale.setIdentity();
+	geomPrimitive = false;
 	if(this->link->collision && this->link->collision->geometry){
 		if(this->link->collision->geometry->type == this->link->collision->geometry->BOX){
+		  geomPrimitive = true;
 			geomName = URDFConverter::primitive_mesh_path + "box_ori_center.tri";
 			boost::shared_ptr<urdf::Box> box = boost::static_pointer_cast<urdf::Box>(this->link->collision->geometry);
 			geomScale(0,0) = box->dim.x;
@@ -127,12 +124,14 @@ void URDFLinkNode::GetGeometryProperty(){
 			geomScale(2,2) = box->dim.z;
 
 		}else if(this->link->collision->geometry->type == this->link->collision->geometry->CYLINDER){
+		  geomPrimitive = true;
 			geomName = URDFConverter::primitive_mesh_path + "cylinder_ori_center.tri";
 			boost::shared_ptr<urdf::Cylinder> cylinder = boost::static_pointer_cast<urdf::Cylinder>(this->link->collision->geometry);
 			geomScale(0,0) = cylinder->radius;
 			geomScale(1,1) = cylinder->radius;
 			geomScale(2,2) = cylinder->length;
 		}if(this->link->collision->geometry->type == this->link->collision->geometry->SPHERE){
+		  geomPrimitive = true;
 			geomName = URDFConverter::primitive_mesh_path + "sphere_ori_center.tri";
 			boost::shared_ptr<urdf::Sphere> sphere = boost::static_pointer_cast<urdf::Sphere>(this->link->collision->geometry);
 			geomScale(0,0) = sphere->radius;
@@ -140,20 +139,7 @@ void URDFLinkNode::GetGeometryProperty(){
 			geomScale(2,2) = sphere->radius;
 		}if(this->link->collision->geometry->type == this->link->collision->geometry->MESH){
 			boost::shared_ptr<urdf::Mesh> mesh = boost::static_pointer_cast<urdf::Mesh>(this->link->collision->geometry);
-			const char* filename;
-			string startstr = mesh->filename.substr(0,10);
-			if( startstr == "package://"){
-				geomName = "DRC_Jingru/";
-				string tmp = mesh->filename.substr(10, mesh->filename.size() - 10);
-				geomName.append(tmp);
-			}else{
-				filename = GetFileName(mesh->filename.c_str());
-				geomName = URDFConverter::urdf_mesh_path;
-				geomName.append(filename);
-			}
-//			StripExtension(geomName);
-//			URDFConverter::ConvertWrltoTri(geomName);
-//			geomName = geomName + ".tri";
+			geomName = mesh->filename.c_str();
 			geomScale(0,0) = mesh->scale.x;
 			geomScale(1,1) = mesh->scale.y;
 			geomScale(2,2) = mesh->scale.z;
