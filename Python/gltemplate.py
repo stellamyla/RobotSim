@@ -21,9 +21,21 @@ class MyGLViewer(GLRealtimeProgram):
 
     def display(self):
         #Put your display handler here
-        #the current example draws the simulated world
+        #the current example draws the simulated world in grey and the
+        #commanded configurations in transparent green
         self.sim.updateWorld()
         self.world.drawGL()
+
+        #draw commanded configurations
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,[0,1,0,0.5])
+        for i in xrange(self.world.numRobots()):
+            r = self.world.robot(i)
+            q = self.sim.getController(i).getCommandedConfig()
+            r.setConfig(q)
+            r.drawGL(False)
+        glDisable(GL_BLEND)
 
     def control_loop(self):
         #Put your control handler here
