@@ -1,10 +1,11 @@
 #include "ODERigidObject.h"
 #include "ODECommon.h"
 #include "ODECustomMesh.h"
+#include "Settings.h"
 #include <ode/ode.h>
 #include <errors.h>
 
-double ODERigidObject::defaultPadding = 0.0025;
+double ODERigidObject::defaultPadding = gDefaultRigidObjectPadding;
 ODESurfaceProperties ODERigidObject::defaultSurface = {0.1,0.5,Inf,Inf};
 
 ODERigidObject::ODERigidObject(const RigidObject& _obj)

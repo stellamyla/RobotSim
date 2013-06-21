@@ -1,6 +1,7 @@
 #include "ODESimulator.h"
 #include "ODECommon.h"
 #include "ODECustomMesh.h"
+#include "Settings.h"
 #include <list>
 //#include "Geometry/Clusterize.h"
 #include <geometry/ConvexHull2D.h>
@@ -67,16 +68,16 @@ ODESimulatorSettings::ODESimulatorSettings()
 {
   gravity[0] = gravity[1] = 0;
   gravity[2] = -9.8;
-  defaultEnvPadding = 0;
+  defaultEnvPadding = gDefaultEnvPadding;
   defaultEnvSurface.kFriction = 0.3;
   defaultEnvSurface.kRestitution = 0.1;
   defaultEnvSurface.kStiffness = 80000;
   defaultEnvSurface.kDamping = 20000;
 
 
-  rigidBodyCollisions = true;
-  robotSelfCollisions = false;
-  robotRobotCollisions = true;
+  rigidBodyCollisions = gRigidBodyCollisionsEnabled;
+  robotSelfCollisions = gRobotSelfCollisionsEnabled;
+  robotRobotCollisions = gRobotRobotCollisionsEnabled;
 
   maxContacts = 20;
   clusterNormalScale = 0.1;

@@ -1,5 +1,14 @@
 #include "ControlledSimulator.h"
 
+//Set these values to 0 to get all warnings
+
+//const static double gTorqueLimitWarningThreshold = 0;
+const static double gTorqueLimitWarningThreshold = Inf;
+
+//const static double gJointLimitWarningThreshold = 0;
+const static double gJointLimitWarningThreshold = Inf;
+
+
 ControlledRobotSimulator::ControlledRobotSimulator()
   :robot(NULL),oderobot(NULL),controller(NULL)
 {
@@ -91,6 +100,22 @@ void ControlledRobotSimulator::GetActuatorTorques(Vector& t) const
   t.resize(command.actuators.size());
   for(size_t i=0;i<command.actuators.size();i++) {
     const RobotJointDriver& d=robot->drivers[i];
+    Real q=oderobot->GetDriverValue(i);
+    Real dq=oderobot->GetDriverVelocity(i);
+    int link = d.linkIndices[0];
+    if(q < robot->qMin(link)) {
+      if(q + TwoPi >= robot->qMin(link) && q + TwoPi <= robot->qMax(link))
+	q += TwoPi;
+    }
+    else if(q > robot->qMax(link)) {
+      if(q - TwoPi <= robot->qMax(link) && q - TwoPi >= robot->qMin(link))
+	q -= TwoPi;
+    }
+    if(q < robot->qMin(link)-gJointLimitWarningThreshold || q > robot->qMax(link)+gJointLimitWarningThreshold) {
+      printf("Warning: joint angle %s out of bounds\n",robot->linkNames[link].c_str());
+      printf("q=%g, qmin=%g, qmax=%g (deg)\n",RtoD(q),RtoD(robot->qMin(link)),RtoD(robot->qMax(link)));
+      //getchar();
+    }
     const ActuatorCommand& cmd=command.actuators[i];
     switch(cmd.mode) {
     case ActuatorCommand::OFF:
@@ -99,35 +124,19 @@ void ControlledRobotSimulator::GetActuatorTorques(Vector& t) const
       break;
     case ActuatorCommand::TORQUE:
       //printf("Warning: direct torque?\n");
-      if(cmd.torque < d.tmin) 
+      if(cmd.torque < d.tmin-gTorqueLimitWarningThreshold) 
 	printf("Actuator %s limit exceeded: %g < %g\n",robot->LinkName(robot->drivers[i].linkIndices[0]).c_str(),cmd.torque,d.tmin);
-      else if(cmd.torque > d.tmax) 
+      else if(cmd.torque > d.tmax+gTorqueLimitWarningThreshold) 
 	printf("Actuator %s limit exceeded: %g > %g\n",robot->LinkName(robot->drivers[i].linkIndices[0]).c_str(),cmd.torque,d.tmax);
       t(i) = Clamp(cmd.torque,d.tmin,d.tmax);
       break;
     case ActuatorCommand::PID:
       {
 	//TODO: simulate low level errors in the PID loop
-	Real q=oderobot->GetDriverValue(i);
-	Real dq=oderobot->GetDriverVelocity(i);
-	int link = d.linkIndices[0];
-	if(q < robot->qMin(link)) {
-	  if(q + TwoPi >= robot->qMin(link) && q + TwoPi <= robot->qMax(link))
-	    q += TwoPi;
-	}
-	else if(q > robot->qMax(link)) {
-	  if(q - TwoPi <= robot->qMax(link) && q - TwoPi >= robot->qMin(link))
-	    q -= TwoPi;
-	}
-	if(q < robot->qMin(link) || q > robot->qMax(link)) {
-	  printf("Warning: joint angle %s out of bounds\n",robot->linkNames[link].c_str());
-	  printf("q=%g, qmin=%g, qmax=%g (deg)\n",RtoD(q),RtoD(robot->qMin(link)),RtoD(robot->qMax(link)));
-	  //getchar();
-	}
 	Real cmdtorque = cmd.GetPIDTorque(q,dq);
-	if(cmdtorque < d.tmin) 
+	if(cmdtorque < d.tmin-gTorqueLimitWarningThreshold) 
 	  printf("Actuator %s limit exceeded: %g < %g\n",robot->LinkName(robot->drivers[i].linkIndices[0]).c_str(),cmdtorque,d.tmin);
-	else if(cmdtorque > d.tmax) 
+	else if(cmdtorque > d.tmax+gTorqueLimitWarningThreshold) 
 	  printf("Actuator %s limit exceeded: %g > %g\n",robot->LinkName(robot->drivers[i].linkIndices[0]).c_str(),cmdtorque,d.tmax);
 	Real td=Clamp(cmdtorque,d.tmin,d.tmax);
 	//printf("%d: Current %g,%g, desired %g,%g, torque desired %g, clamped %g\n",i,q,dq,cmd.qdes,cmd.dqdes,cmd.GetPIDTorque(q,dq),td);

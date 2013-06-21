@@ -6,10 +6,9 @@
 #include <math/angle.h>
 #include <math3d/interpolate.h>
 #include <robotics/Rotation.h>
+#include "Settings.h"
 
-#define USE_JOINT_STOPS 1
-
-double ODERobot::defaultPadding = 0.0025;
+double ODERobot::defaultPadding = gDefaultRobotPadding;
 ODESurfaceProperties ODERobot::defaultSurface = {0.1,1.0,Inf,Inf};
 
 //given inertia matrix Hc about c, returns inertia matrix around origin
