@@ -1,6 +1,6 @@
 #include "MultiPath.h"
 #include "Resources.h"
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include <utils/ioutils.h>
 #include <spline/TimeSegmentation.h>
 #include <spline/Hermite.h>

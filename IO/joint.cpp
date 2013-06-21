@@ -37,7 +37,7 @@
 #include <sstream>
 #include "joint.h"
 #include <boost/lexical_cast.hpp>
-#include "../Library/tinyxml/tinyxml.h"
+#include <tinyxml.h>
 #include "urdf_parser.h"
 #include <stdio.h>
 #include <iostream>

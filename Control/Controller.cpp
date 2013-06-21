@@ -3,7 +3,7 @@
 #include "LoggingController.h"
 #include "PathController.h"
 #include "JointTrackingController.h"
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 
 RobotController::RobotController(Robot& _robot)
   : robot(_robot),time(0),sensors(NULL),command(NULL)

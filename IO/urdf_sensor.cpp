@@ -40,7 +40,7 @@
 #include <sstream>
 #include <boost/lexical_cast.hpp>
 #include <algorithm>
-#include "../Library/tinyxml/tinyxml.h"
+#include <tinyxml.h>
 
 namespace urdf{
 

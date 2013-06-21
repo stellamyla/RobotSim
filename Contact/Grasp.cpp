@@ -1,5 +1,5 @@
 #include "Grasp.h"
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 
 Grasp::Grasp()
   :objectIndex(-1),robotIndex(0)
