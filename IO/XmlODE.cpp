@@ -54,6 +54,13 @@ bool XmlODESettings::GetSettings(ODESimulator& sim)
     int maxContacts;
     if(c->QueryValueAttribute("maxContacts",&maxContacts)==TIXML_SUCCESS)
       sim.GetSettings().maxContacts = maxContacts;
+    int rigidObjectCollisions,robotSelfCollisions,robotRobotCollisions;
+    if(c->QueryValueAttribute("rigidObjectCollisions",&rigidObjectCollisions)==TIXML_SUCCESS)
+      sim.GetSettings().rigidObjectCollisions = rigidObjectCollisions;
+    if(c->QueryValueAttribute("robotSelfCollisions",&robotSelfCollisions)==TIXML_SUCCESS)
+      sim.GetSettings().robotSelfCollisions = robotSelfCollisions;
+    if(c->QueryValueAttribute("robotRobotCollisions",&robotRobotCollisions)==TIXML_SUCCESS)
+      sim.GetSettings().robotRobotCollisions = robotRobotCollisions;
   }
   else c=e->FirstChildElement();
 
