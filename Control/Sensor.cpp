@@ -1,7 +1,7 @@
 #include "Sensor.h"
 #include "Simulation/ControlledSimulator.h"
 #include <math/random.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include <sstream>
 
 //emulates a process that discretizes a continuous value into a digital one
