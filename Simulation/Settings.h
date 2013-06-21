@@ -18,7 +18,7 @@ const static double gDefaultRigidObjectPadding = 0.0025;
 const static double gDefaultEnvPadding = 0.0;
 
 //Change the default collision testing settings.
-const static bool gRigidBodyCollisionsEnabled = true;
+const static bool gRigidObjectCollisionsEnabled = true;
 const static bool gRobotSelfCollisionsEnabled = false;
 const static bool gRobotRobotCollisionsEnabled = true;
 

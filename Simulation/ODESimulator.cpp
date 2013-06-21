@@ -75,7 +75,7 @@ ODESimulatorSettings::ODESimulatorSettings()
   defaultEnvSurface.kDamping = 20000;
 
 
-  rigidBodyCollisions = gRigidBodyCollisionsEnabled;
+  rigidObjectCollisions = gRigidObjectCollisionsEnabled;
   robotSelfCollisions = gRobotSelfCollisionsEnabled;
   robotRobotCollisions = gRobotRobotCollisionsEnabled;
 
@@ -704,7 +704,7 @@ void ODESimulator::DetectCollisions()
 
   pair<ODEObjectID,ODEObjectID> cindex;
   int jcount=0;
-  if(settings.rigidBodyCollisions) {
+  if(settings.rigidObjectCollisions) {
     //call the collision routine between objects and the world
     dSpaceCollide(envSpaceID,(void*)this,collisionCallback);
 

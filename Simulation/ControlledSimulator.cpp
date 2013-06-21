@@ -1,13 +1,5 @@
 #include "ControlledSimulator.h"
-
-//Set these values to 0 to get all warnings
-
-//const static double gTorqueLimitWarningThreshold = 0;
-const static double gTorqueLimitWarningThreshold = Inf;
-
-//const static double gJointLimitWarningThreshold = 0;
-const static double gJointLimitWarningThreshold = Inf;
-
+#include "Settings.h"
 
 ControlledRobotSimulator::ControlledRobotSimulator()
   :robot(NULL),oderobot(NULL),controller(NULL)

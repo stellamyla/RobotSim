@@ -74,7 +74,7 @@ struct ODESimulatorSettings
   ODESurfaceProperties defaultEnvSurface;
 
   //collision checking settings
-  bool rigidBodyCollisions;
+  bool rigidObjectCollisions;
   bool robotSelfCollisions;
   bool robotRobotCollisions;
 
