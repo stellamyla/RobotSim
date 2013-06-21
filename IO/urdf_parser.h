@@ -39,8 +39,7 @@
 
 #include <string>
 #include <map>
-//#include <tinyxml.h>
-#include "../Library/tinyxml/tinyxml.h"
+#include <tinyxml.h>
 #include <boost/function.hpp>
 //#include <urdf_model/model.h>
 #include "model.h"
