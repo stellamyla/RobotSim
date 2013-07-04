@@ -1,8 +1,16 @@
 #include "Sensor.h"
 #include "Simulation/ControlledSimulator.h"
+#include "Simulation/ODESimulator.h"
 #include <math/random.h>
 #include <tinyxml.h>
 #include <sstream>
+
+//defined in ODESimulator.cpp
+bool HasContact(dBodyID a);
+
+//defined in ODESimulator.cpp
+///Will produce bogus o1 and o2 vectors
+void GetContacts(dBodyID a,vector<ODEContactList>& contacts);
 
 //emulates a process that discretizes a continuous value into a digital one
 //with resolution resolution, and variance variance
@@ -417,7 +425,32 @@ ContactSensor::ContactSensor()
 
 void ContactSensor::Simulate(ControlledRobotSimulator* robot)
 {
-  fprintf(stderr,"TODO: simulate contact sensors\n");
+  RigidTransform Tlink;
+  robot->oderobot->GetLinkTransform(link,Tlink);
+  RigidTransform TsensorWorld  = Tlink*Tsensor;
+  contact = false;
+  force.setZero();
+  dBodyID body = robot->oderobot->body(link);
+  if(!body || !HasContact(body)) {
+    return;
+  }
+  //look through contacts
+  vector<ODEContactList> contacts;
+  GetContacts(body,contacts);
+  Vector3 xlocal,flocal;
+  for(size_t i=0;i<contacts.size();i++) {
+    for(size_t j=0;j<contacts[i].points.size();j++) {
+      TsensorWorld.mulInverse(contacts[i].points[j].x,xlocal);
+      if(patchMin.x <= xlocal.x && xlocal.x <= patchMax.x &&
+	 patchMin.y <= xlocal.y && xlocal.y <= patchMax.y &&
+	 Abs(xlocal.z) <= patchTolerance) {
+	//contact!
+	contact = true;
+	Tsensor.R.mulTranspose(contacts[i].forces[j],flocal);
+	force += flocal;
+      }
+    }
+  }
 }
 
 void ContactSensor::Reset()
@@ -463,9 +496,7 @@ map<string,string> ContactSensor::Settings() const
   FILL_SENSOR_SETTING(settings,patchMin);
   FILL_SENSOR_SETTING(settings,patchMax);
   FILL_SENSOR_SETTING(settings,patchTolerance);
-  FILL_SENSOR_SETTING(settings,hasForce[0]);
-  FILL_SENSOR_SETTING(settings,hasForce[1]);
-  FILL_SENSOR_SETTING(settings,hasForce[2]);
+  FILL_ARRAY_SENSOR_SETTING(settings,hasForce,3);
   FILL_SENSOR_SETTING(settings,fVariance);
   return settings;
 }
@@ -477,9 +508,7 @@ bool ContactSensor::GetSetting(const string& name,string& str) const
   GET_SENSOR_SETTING(patchMin);
   GET_SENSOR_SETTING(patchMax);
   GET_SENSOR_SETTING(patchTolerance);
-  GET_SENSOR_SETTING(hasForce[0]);
-  GET_SENSOR_SETTING(hasForce[1]);
-  GET_SENSOR_SETTING(hasForce[2]);
+  GET_ARRAY_SENSOR_SETTING(hasForce,3);
   GET_SENSOR_SETTING(fVariance);
   return false;
 }
@@ -491,9 +520,7 @@ bool ContactSensor::SetSetting(const string& name,const string& str)
   SET_SENSOR_SETTING(patchMin);
   SET_SENSOR_SETTING(patchMax);
   SET_SENSOR_SETTING(patchTolerance);
-  SET_SENSOR_SETTING(hasForce[0]);
-  SET_SENSOR_SETTING(hasForce[1]);
-  SET_SENSOR_SETTING(hasForce[2]);
+  SET_ARRAY_SENSOR_SETTING(hasForce,3);
   SET_SENSOR_SETTING(fVariance);
   return false;
 }

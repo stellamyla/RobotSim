@@ -181,8 +181,6 @@ ODESimulator::~ODESimulator()
   dWorldDestroy(worldID);
 }
 
-//dGeomID planeGeomID = 0;
-
 void ODESimulator::AddEnvironment(const Environment& env)
 {
   envs.push_back(&env);
@@ -197,15 +195,12 @@ void ODESimulator::AddEnvironment(const Environment& env)
   dGeomSetData(envMeshes.back()->geom(),(void*)(-(int)envs.size()));
   dGeomSetCategoryBits(envMeshes.back()->geom(),0x1);
   dGeomSetCollideBits(envMeshes.back()->geom(),0xffffffff ^ 0x1);
-  /*
-  planeGeomID = dCreatePlane(envSpaceID,0,0,1,0);
-  dGeomSetData(planeGeomID,(void*)-1);
-  */
 }
 
 void ODESimulator::AddRobot(Robot& robot)
 {
   robots.push_back(new ODERobot(robot));
+  //For some reason, self collisions don't work with hash spaces
   robots.back()->Create(worldID);
   //robotStances.resize(robots.size());
   for(size_t i=0;i<robot.links.size();i++)
@@ -236,6 +231,8 @@ void ODESimulator::Step(Real dt)
   Assert(timestep == 0);
   //Timer timer;
   //double collisionTime,stepTime,updateTime;
+
+  gContacts.clear();
 
   timestep=dt;
   DetectCollisions();
@@ -274,9 +271,10 @@ void ODESimulator::Step(Real dt)
       Assert(cl.points.size() == cl.forces.size());
   }
 
-  //TEMP: testing whether this affects reloading sim state
-  gContacts.clear();
   timestep = 0;
+  //KH: commented this out so GetContacts() would work for ContactSensor simulation.  Be careful about loading state
+  //gContacts.clear();
+
   //updateTime = timer.ElapsedTime();
 
   //printf("ODE simulation step: %g collision, %g step, %g update\n",collisionTime,stepTime,updateTime);
@@ -422,7 +420,11 @@ void ClusterContacts(vector<dContactGeom>& contacts,int maxClusters,Real cluster
   }
 
   Statistics::KMeans kmeans(pts,maxClusters);
-  kmeans.RandomInitialCenters();
+  //randomized
+  //kmeans.RandomInitialCenters();
+  //deterministic
+  for(size_t i=0;i<kmeans.centers.size();i++)
+    kmeans.centers[i] = kmeans.data[(i*pts.size())/kmeans.centers.size()];
   int iters=20;
   kmeans.Iterate(iters);
   contacts.resize(kmeans.centers.size());
@@ -502,7 +504,6 @@ void MergeContacts(vector<dContactGeom>& contacts,double posTolerance,double ori
 
 void collisionCallback(void *data, dGeomID o1, dGeomID o2)
 {
-  //ODESimulator* sim = reinterpret_cast<ODESimulator*>(data);
   Assert(!dGeomIsSpace(o1) && !dGeomIsSpace(o2));
   
   int num = dCollide (o1,o2,max_contacts,gContactTemp,sizeof(dContactGeom));
@@ -536,6 +537,57 @@ void collisionCallback(void *data, dGeomID o1, dGeomID o2)
     	//// The int type is not guaranteed to be big enough, use intptr_t
 		//cout<<numOk<<" contacts between env "<<(int)dGeomGetData(o2)<<" and body "<<(int)dGeomGetData(o1)<<"  (clustered to "<<vcontact.size()<<")"<<endl;
 		cout<<numOk<<" contacts between env "<<(intptr_t)dGeomGetData(o2)<<" and body "<<(intptr_t)dGeomGetData(o1)<<"  (clustered to "<<vcontact.size()<<")"<<endl;
+    gContacts.push_back(ODEContactResult());
+    gContacts.back().o1 = o1;
+    gContacts.back().o2 = o2;
+    swap(gContacts.back().contacts,vcontact);
+  }
+}
+
+void selfCollisionCallback(void *data, dGeomID o1, dGeomID o2)
+{
+  ODERobot* robot = reinterpret_cast<ODERobot*>(data);
+  Assert(!dGeomIsSpace(o1) && !dGeomIsSpace(o2));
+  intptr_t link1 = (intptr_t)dGeomGetData(o1);
+  intptr_t link2 = (intptr_t)dGeomGetData(o2);
+  Assert(link1 >= 0 && (int)link1 < (int)robot->robot.links.size());
+  Assert(link2 >= 0 && (int)link2 < (int)robot->robot.links.size());
+  if(robot->robot.selfCollisions(link1,link2)==NULL) {
+    return;
+  }
+  
+  int num = dCollide (o1,o2,max_contacts,gContactTemp,sizeof(dContactGeom));
+  vector<dContactGeom> vcontact(num);
+  int numOk = 0;
+  for(int i=0;i<num;i++) {
+    if(gContactTemp[i].g1 == o2 && gContactTemp[i].g2 == o1) {
+      printf("Swapping contact\n");
+      std::swap(gContactTemp[i].g1,gContactTemp[i].g2);
+      for(int k=0;k<3;k++) gContactTemp[i].normal[k]*=-1.0;
+      std::swap(gContactTemp[i].side1,gContactTemp[i].side2);
+    }
+    Assert(gContactTemp[i].g1 == o1);
+    Assert(gContactTemp[i].g2 == o2);
+    vcontact[numOk] = gContactTemp[i];
+    const dReal* n=vcontact[numOk].normal;
+    if(Sqr(n[0])+Sqr(n[1])+Sqr(n[2]) < 0.9 || Sqr(n[0])+Sqr(n[1])+Sqr(n[2]) > 1.2) {
+      printf("Warning, degenerate contact with normal %f %f %f\n",vcontact[numOk].normal[0],vcontact[numOk].normal[1],vcontact[numOk].normal[2]);
+      //continue;
+    }
+    numOk++;
+  }
+  if(numOk > 0) printf("%d self collision contacts between links %d and %d\n",numOk,(int)link1,(int)link2);
+  vcontact.resize(numOk);
+  
+  if(kMergeContacts && numOk > 0) {
+    MergeContacts(vcontact,kContactPosMergeTolerance,kContactOriMergeTolerance);
+  }
+
+  if(vcontact.size() > 0) {
+    if(numOk != (int)vcontact.size())
+    	//// The int type is not guaranteed to be big enough, use intptr_t
+		//cout<<numOk<<" contacts between env "<<(int)dGeomGetData(o2)<<" and body "<<(int)dGeomGetData(o1)<<"  (clustered to "<<vcontact.size()<<")"<<endl;
+		cout<<numOk<<" contacts between link "<<(intptr_t)dGeomGetData(o2)<<" and link "<<(intptr_t)dGeomGetData(o1)<<"  (clustered to "<<vcontact.size()<<")"<<endl;
     gContacts.push_back(ODEContactResult());
     gContacts.back().o1 = o1;
     gContacts.back().o2 = o2;
@@ -784,10 +836,12 @@ void ODESimulator::DetectCollisions()
     }
 
     if(settings.robotSelfCollisions) {
+      robots[i]->EnableSelfCollisions(true);
+
       cindex.second = ODEObjectID(1,i);
       list<ODEContactResult>::iterator gContactStart = --gContacts.end();
       //call the self collision routine for the robot
-      dSpaceCollide(robots[i]->space(),(void*)this,collisionCallback);
+      dSpaceCollide(robots[i]->space(),(void*)robots[i],selfCollisionCallback);
       ++gContactStart;
       
       ProcessContacts(gContactStart,gContacts.end(),settings);
@@ -870,6 +924,36 @@ bool HasContact(dBodyID a)
   }
   return false;
 }
+
+///Will produce bogus o1 and o2 vectors
+void GetContacts(dBodyID a,vector<ODEContactList>& contacts)
+{
+  if(a == 0) return;
+
+  contacts.resize(0);
+  for(list<ODEContactResult>::iterator i=gContacts.begin();i!=gContacts.end();i++) {
+    if(a == dGeomGetBody(i->o1) || a == dGeomGetBody(i->o2)) {
+      dBodyID b = dGeomGetBody(i->o2);
+      bool reverse = false;
+      if(b == a) { b = dGeomGetBody(i->o1); reverse = true; }
+      contacts.resize(contacts.size()+1);
+      contacts.back().points.resize(i->contacts.size());
+      contacts.back().forces.resize(i->feedback.size());
+      for(size_t j=0;j<i->feedback.size();j++) {
+	CopyVector(contacts.back().forces[j],i->feedback[j].f1);
+	CopyVector(contacts.back().points[j].x,i->contacts[j].pos);
+	CopyVector(contacts.back().points[j].n,i->contacts[j].normal);
+	//contacts.back().points[j].kFriction = i->contacts[j].surface.mu;
+	contacts.back().points[j].kFriction = 0;
+	if(reverse) {
+	  contacts.back().forces[j].inplaceNegative();
+	  contacts.back().points[j].n.inplaceNegative();
+	}
+      }
+    }
+  }
+}
+
 
 bool HasContact(dBodyID a,dBodyID b)
 {

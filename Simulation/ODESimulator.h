@@ -135,6 +135,7 @@ class ODESimulator
   void ClearCollisions();
   void EnableContactFeedback(const ODEObjectID& a,const ODEObjectID& b);
   ODEContactList* GetContactFeedback(const ODEObjectID& a,const ODEObjectID& b);
+  void GetContactFeedback(const ODEObjectID& a,vector<ODEContactList*>& contacts);
   bool InContact(const ODEObjectID& a) const;
   bool InContact(const ODEObjectID& a,const ODEObjectID& b) const;
   void SetupContactResponse(const ODEObjectID& a,const ODEObjectID& b,int feedbackIndex,ODEContactResult& c);
