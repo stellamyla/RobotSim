@@ -51,6 +51,38 @@ void ODERobot::Clear()
   jointFeedback.resize(0);
 }
 
+void ODERobot::EnableSelfCollisions(bool enabled)
+{
+  if(SelfCollisionsEnabled() != enabled) {
+    //remove geometry
+    if(spaceID) {
+      for(size_t i=0;i<geometry.size();i++)
+	if(geometry[i]) dSpaceRemove(spaceID,geometry[i]->geom());
+    }
+
+    SafeDeleteProc(spaceID,dSpaceDestroy);
+    if(enabled) {
+      spaceID = dSimpleSpaceCreate(0);
+    }
+    else {
+      spaceID = dHashSpaceCreate(0);
+      dHashSpaceSetLevels(spaceID,-3,0);
+    }
+    dSpaceSetCleanup(spaceID,0);
+    //dGeomSetData(spaceID,(void*)this);
+
+    //add back geometry
+    for(size_t i=0;i<geometry.size();i++)
+      if(geometry[i]) dSpaceAdd(spaceID,geometry[i]->geom());
+  }
+}
+
+bool ODERobot::SelfCollisionsEnabled() const
+{
+  if(!spaceID) return false;
+  if(dSpaceGetClass(spaceID) == dSimpleSpaceClass) return true;
+  else return false;
+}
 
 //for attached links, returns the base body for the link
 dBodyID ODERobot::baseBody(int link) const
