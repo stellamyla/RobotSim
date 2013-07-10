@@ -29,6 +29,8 @@ class ODERobot
   ~ODERobot();
   void Create(dWorldID worldID);
   void Clear();
+  void EnableSelfCollisions(bool enabled);
+  bool SelfCollisionsEnabled() const;
   void SetConfig(const Config& q);
   void GetConfig(Config& q) const;
   void SetVelocities(const Config& dq);
