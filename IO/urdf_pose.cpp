@@ -35,7 +35,7 @@
 /* Author: Wim Meeussen, John Hsu */
 
 
-#include "pose.h"
+#include "urdf_pose.h"
 #include <fstream>
 #include <sstream>
 #include <boost/lexical_cast.hpp>

@@ -43,8 +43,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "joint.h"
-#include "color.h"
+#include "urdf_joint.h"
+#include "urdf_color.h"
 
 namespace urdf{
 

@@ -5,6 +5,7 @@
 #include <spline/TimeSegmentation.h>
 #include <spline/Hermite.h>
 #include <fstream>
+#include <sstream>
 
 
 ostream& operator << (ostream& out,const MultiPath& path)

@@ -35,7 +35,7 @@
 /* Author: John Hsu */
 
 
-#include "model_state.h"
+#include "urdf_model_state.h"
 #include <fstream>
 #include <sstream>
 #include <boost/lexical_cast.hpp>

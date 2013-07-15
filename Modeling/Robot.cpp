@@ -13,9 +13,8 @@
 #include <sstream>
 #include <Timer.h>
 #include "IO/urdf_parser.h"
-#include "IO/joint.h"
-#include "IO/link.h"
-#include <boost/shared_ptr.hpp>
+#include "IO/urdf_joint.h"
+#include "IO/urdf_link.h"
 #include "IO/URDFConverter.h"
 //using namespace urdf;
 

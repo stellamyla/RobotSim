@@ -5,11 +5,15 @@
 #include <tinyxml.h>
 #include <sstream>
 
+#ifdef WIN32
+static inline double round(double val) { return floor(val + 0.5); }
+#endif //WIN32
+
 //defined in ODESimulator.cpp
 bool HasContact(dBodyID a);
 
 //defined in ODESimulator.cpp
-///Will produce bogus o1 and o2 vectors
+///Will produce bogus o1 and o2 elements
 void GetContacts(dBodyID a,vector<ODEContactList>& contacts);
 
 //emulates a process that discretizes a continuous value into a digital one

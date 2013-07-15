@@ -1,6 +1,7 @@
 #include "SelfTest.h"
 #include "RampCSpace.h"
 #include <Timer.h>
+#include <time.h>
 
 //tests shortcutting on randomly generated paths between a and b
 void TestShortcutting(SingleRobotCSpace* cspace,MotionPlannerFactory& plannerFactory,const Config& a,const Config& b)

@@ -36,7 +36,7 @@
 
 
 #include "urdf_parser.h"
-#include "link.h"
+#include "urdf_link.h"
 #include <fstream>
 #include <sstream>
 #include <boost/lexical_cast.hpp>

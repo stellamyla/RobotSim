@@ -42,9 +42,9 @@
 #include <tinyxml.h>
 #include <boost/function.hpp>
 //#include <urdf_model/model.h>
-#include "model.h"
-#include "world.h"
-#include "color.h"
+#include "urdf_model.h"
+#include "urdf_world.h"
+#include "urdf_color.h"
 
 namespace urdf_export_helpers {
 

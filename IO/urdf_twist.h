@@ -41,7 +41,7 @@
 #include <sstream>
 #include <vector>
 #include <math.h>
-#include "pose.h"
+#include "urdf_pose.h"
 
 namespace urdf{
 

@@ -34,81 +34,116 @@
 
 /* Author: John Hsu */
 
-/* encapsulates components in a world
-   see http://ros.org/wiki/usdf/XML/urdf_world and
-   for details
-*/
-/* example world XML
-
-<world name="pr2_with_table">
-  <!-- include the models by including
-       either the complete urdf or
-       referencing the file name.  -->
-  <model name="pr2">
-    ...
-  </model>
-  <include filename="table.urdf" model_name="table_model"/>
-
-  <!-- models in the world -->
-  <entity model="pr2" name="prj">
-    <origin xyz="0 1 0" rpy="0 0 0"/>
-    <twist linear="0 0 0" angular="0 0 0"/>
-  </entity>
-  <entity model="pr2" name="prk">
-    <origin xyz="0 2 0" rpy="0 0 0"/>
-    <twist linear="0 0 0" angular="0 0 0"/>
-  </entity>
-  <entity model="table_model">
-    <origin xyz="0 3 0" rpy="0 0 0"/>
-    <twist linear="0 0 0" angular="0 0 0"/>
-  </entity>
-
-</world>
-
-*/
-
-#ifndef USDF_STATE_H
-#define USDF_STATE_H
+#ifndef URDF_MODEL_STATE_H
+#define URDF_MODEL_STATE_H
 
 #include <string>
 #include <vector>
 #include <map>
-#include <tinyxml.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "model.h"
-#include "pose.h"
-#include "twist.h"
+#include "urdf_pose.h"
+#include "urdf_twist.h"
+
 
 namespace urdf{
 
-class Entity
+static int my_round (double x) {
+  int i = (int) x;
+  if (x >= 0.0) {
+    return ((x-i) >= 0.5) ? (i + 1) : (i);
+  } else {
+    return (-x+i >= 0.5) ? (i - 1) : (i);
+  }
+}
+
+class Time
 {
 public:
-  boost::shared_ptr<ModelInterface> model;
-  Pose origin;
-  Twist twist;
+  Time() { this->clear(); };
+
+  void set(double _seconds)
+  {
+    this->sec = (int32_t)(floor(_seconds));
+    this->nsec = (int32_t)(my_round((_seconds - this->sec) * 1e9));
+    this->Correct();
+  };
+
+  operator double ()
+  {
+    return (static_cast<double>(this->sec) +
+            static_cast<double>(this->nsec)*1e-9);
+  };
+
+  int32_t sec;
+  int32_t nsec;
+
+  void clear()
+  {
+    this->sec = 0;
+    this->nsec = 0;
+  };
+private:
+  void Correct()
+  {
+    // Make any corrections
+    if (this->nsec >= 1e9)
+    {
+      this->sec++;
+      this->nsec = (int32_t)(this->nsec - 1e9);
+    }
+    else if (this->nsec < 0)
+    {
+      this->sec--;
+      this->nsec = (int32_t)(this->nsec + 1e9);
+    }
+  };
 };
 
-class World
+
+class JointState
 {
 public:
-  World() { this->clear(); };
+  JointState() { this->clear(); };
 
-  /// world name must be unique
+  /// joint name
+  std::string joint;
+
+  std::vector<double> position;
+  std::vector<double> velocity;
+  std::vector<double> effort;
+
+  void clear()
+  {
+    this->joint.clear();
+    this->position.clear();
+    this->velocity.clear();
+    this->effort.clear();
+  }
+};
+
+class ModelState
+{
+public:
+  ModelState() { this->clear(); };
+
+  /// state name must be unique
   std::string name;
 
-  std::vector<Entity> objectModels;
-  std::vector<Entity> robotModels;
-
-  void initXml(TiXmlElement* config);
+  Time time_stamp;
 
   void clear()
   {
     this->name.clear();
+    this->time_stamp.set(0);
+    this->joint_states.clear();
   };
+
+  std::vector<boost::shared_ptr<JointState> > joint_states;
+
 };
+
 }
 
 #endif

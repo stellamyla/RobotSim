@@ -66,9 +66,9 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
-#include "pose.h"
-#include "joint.h"
-#include "link.h"
+#include "urdf_pose.h"
+#include "urdf_joint.h"
+#include "urdf_link.h"
 
 namespace urdf{
 

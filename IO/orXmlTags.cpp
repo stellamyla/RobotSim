@@ -191,28 +191,26 @@ void rotationMat2RPY(const Matrix3& mat, Vector3& vec){
 //	return c;
 //}
 
+
+int lcstrcmp(const char* a,const char* b)
+{
+	while(*a && *b) {
+		if(tolower(*a)!=tolower(*b)) 
+			return tolower(*a)-tolower(*b);
+		a++;
+		b++;
+	}
+	return tolower(*a)-tolower(*b);
+}
+
 TiXmlElement* getFirstChild(TiXmlElement* e, char* value){
 	if(!value)
 		cout<<"Error: value is empty in getChild!\n";
 
-	char newvalue[strlen(value)+1];
-	strcpy(newvalue,value);
-	for(int i = 0; i < strlen(value); i++)
-		if(isupper(newvalue[i]))
-			newvalue[i] = tolower(newvalue[i]);
-
 	TiXmlElement* child = e->FirstChildElement();
 	while(child){
 		const char* childstr = child->Value();
-		char newchildvalue[strlen(childstr)+1];
-		strcpy(newchildvalue,childstr);
-		for(int i = 0; i < strlen(childstr); i++)
-				if(isupper(newchildvalue[i]))
-					newchildvalue[i] = tolower(newchildvalue[i]);
-
-		if(0 == strcmp(newchildvalue, newvalue)){
-			return child;
-		}
+		if(0==lcstrcmp(value,childstr)) return child;
 		child = child->NextSiblingElement();
 	}
 	return NULL;
@@ -221,21 +219,10 @@ TiXmlElement* getFirstChild(TiXmlElement* e, char* value){
 TiXmlElement* getNextSibling(TiXmlElement* e, char* value){
 	if(!value)
 		cout<<"Error: value is empty in getChild!\n";
-	char newvalue[strlen(value)+1];
-	strcpy(newvalue,value);
-	for(int i = 0; i < strlen(value); i++)
-		if(isupper(newvalue[i]))
-			newvalue[i] = tolower(newvalue[i]);
+
 	TiXmlElement* child = e->NextSiblingElement();
 	while(child){
-		const char* childstr = child->Value();
-		char newchildvalue[strlen(childstr)+1];
-		strcpy(newchildvalue,childstr);
-		for(int i = 0; i < strlen(childstr); i++)
-				if(isupper(newchildvalue[i]))
-					newchildvalue[i] = tolower(newchildvalue[i]);
-
-		if(0 == strcmp(newchildvalue, newvalue)){
+		if(0 == lcstrcmp(child->Value(), value)){
 			return child;
 		}
 		child = child->NextSiblingElement();
@@ -277,19 +264,19 @@ OrXmlTransformation::OrXmlTransformation(TiXmlElement* element){
 }
 
 OrXmlTransformation::~OrXmlTransformation(){
-	for(int i = 0; i < this->rotationaxis.size(); i++){
+	for(size_t i = 0; i < this->rotationaxis.size(); i++){
 		if(this->rotationaxis[i])
 				delete rotationaxis[i];
 	}
-	for(int i = 0; i < this->rotationmat.size(); i++){
+	for(size_t i = 0; i < this->rotationmat.size(); i++){
 		if(this->rotationmat[i])
 				delete rotationmat[i];
 	}
-	for(int i = 0; i < this->translation.size(); i++){
+	for(size_t i = 0; i < this->translation.size(); i++){
 		if(this->translation[i])
 				delete translation[i];
 	}
-	for(int i = 0; i < this->quat.size(); i++){
+	for(size_t i = 0; i < this->quat.size(); i++){
 		if(this->quat[i])
 				delete quat[i];
 	}
@@ -305,11 +292,11 @@ int OrXmlTransformation::getTransformType(TiXmlElement* et){
 		getchar();
 		return -1;
 	}
-	if(0==strcmp(et->Value(), "rotationMat") || 0==strcmp(et->Value(), "RotationMat") || 0==strcmp(et->Value(), "Rotationmat") || 0==strcmp(et->Value(), "rotationmat"))
+	if(0==lcstrcmp(et->Value(), "rotationmat"))
 		return 1;
-	if(0==strcmp(et->Value(), "rotationAxis") || 0==strcmp(et->Value(), "RotationAxis") || 0==strcmp(et->Value(), "Rotationaxis") || 0==strcmp(et->Value(), "rotationaxis"))
+	if(0==lcstrcmp(et->Value(), "rotationaxis"))
 		return 2;
-	if(0==strcmp(et->Value(), "quat") || 0==strcmp(et->Value(), "Quat"))
+	if(0==lcstrcmp(et->Value(), "quat"))
 		return 3;
 	return 0;
 }

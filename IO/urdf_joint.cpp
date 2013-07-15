@@ -35,7 +35,7 @@
 /* Author: John Hsu */
 
 #include <sstream>
-#include "joint.h"
+#include "urdf_joint.h"
 #include <boost/lexical_cast.hpp>
 #include <tinyxml.h>
 #include "urdf_parser.h"
