@@ -47,9 +47,9 @@ if on_cygwin:
     kllibs.append('glut32')
 if on_windows:
 	if win32debug:
-		kllibs = ['KrisLibraryd','tinyxmld_STL','glui32d','glut32','opengl32','winmm']
+		kllibs = ['KrisLibraryd','tinyxmld_STL','glui32d','glut32','opengl32','winmm','user32']
 	else:
-		kllibs = ['KrisLibrary','tinyxml_STL','glui32','glut32','opengl32','winmm']
+		kllibs = ['KrisLibrary','tinyxml_STL','glui32','glut32','opengl32','winmm','user32']
 
 #needed for RobotSim to link
 libs = ['RobotSim']+kllibs+['ode']
