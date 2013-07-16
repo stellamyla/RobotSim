@@ -13,7 +13,7 @@
 #include <utils/stringutils.h>
 #include <ode/ode.h>
 #include <fstream>
-#include <unistd.h>
+//#include <unistd.h>
 using namespace GLDraw;
 
 /// Internally used.
